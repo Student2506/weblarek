@@ -1,0 +1,70 @@
+@startuml Overview
+class Item {
+ +id: string
+ +description: string
+ +image: string
+ +title: string
+ +category: Category[]
+ +price: number | null
+}
+
+class Category {
+  +key: string
+  +name: string
+}
+
+
+interface User {
+  +email: string
+  +phone: string
+}
+
+class EndUser implements User {
+  +address: string
+  +orders: Order[]
+  +payment: string[]
+
+  + checkUserData(): Error[]
+  + getUserData(): EndUser
+  + saveUserData(user: EndUser)
+  + clearUserData()
+}
+
+class Error {
+  reason: string
+}
+class Admin implements User {
+  +rights: string[]
+}
+
+class Order {
+  +items: Item[]
+  +user: EndUser
+}
+
+Item "1" --> "1..*" Category : belogns to
+Order *.. Item : contains
+Order *.. EndUser : assigned
+
+class FrontPage {
+  - itemsList: Item[]
+  - currentItem: Item
+  + removeItem(itemId: string)
+  + setSelectedItem(item: Item)
+  + getSelectedItem(): Item
+  + loadItemsList(items: Item[])
+  + getItem(itemId: string): Item
+}
+
+class Basket {
+  - listItems: Item[]
+  + addItem(item: Item)
+  + removeItem(item: Item)
+  + itemsCount(): number
+  + getItemsList(): Item[]
+  + itemsAmount(): number
+  + checkItemAvailablity(item: Item): boolean
+  + clearBasket()
+  + checkIfItemInList(itemId: string)
+}
+@enduml

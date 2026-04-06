@@ -98,3 +98,111 @@ Presenter - презентер содержит основную логику п
 `emit<T extends object>(event: string, data?: T): void` - инициализация события. При вызове события в метод передается название события и объект с данными, который будет использован как аргумент для вызова обработчика.  
 `trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void` - возвращает функцию, при вызове которой инициализируется требуемое в параметрах событие с передачей в него данных из второго параметра.
 
+### Данные  
+#### Класс User  
+```plantuml
+@startuml  
+interface User {  
+  +email: string  
+  +phone: string  
+}  
+@startuml  
+```  
+Является базовым для организации иерархии пользователей.  
+
+#### Класс EndUser
+```plantuml  
+@startuml  
+class EndUser implements User {  
+  +address: string  
+  +orders: Order[]  
+  +payment: string[]  
+
+  + checkUserData(): Error[]  
+  + getUserData(): EndUser  
+  + saveUserData(user: EndUser)  
+  + clearUserData()  
+}  
+@enduml  
+```
+является реализацией пользователя на сайте:  
+ - содержит все данные для работы пользователя (телефон, емайл, адрес доставки, заказы, тип оплаты)  
+ - имеет методы проверки:  
+    - валидности своих данных  
+    - получения\изменения данных  
+    - удадения\сброса данных  
+
+#### Класс Admin  
+```plantuml  
+@startuml  
+class Admin implements User {  
+  +rights: string[]  
+}  
+@enduml  
+```  
+содержит данные для работы адмниа\модератора сайта  
+
+#### Класс Item  
+```plantuml  
+@startuml  
+class Item {  
+ +id: string  
+ +description: string  
+ +image: string  
+ +title: string  
+ +category: Category[]  
+ +price: number | null  
+}  
+@enduml  
+```  
+Является реализацией товара\услуги на сайте  
+
+#### Класс Order  
+```plantuml  
+@startuml  
+class Order {  
+  +items: Item[]  
+  +user: EndUser  
+}  
+@enduml  
+```  
+Описывыет соответствие товаров (Item) и покупателя (EndUser)  
+
+### Компоненты  
+#### Главная старница  
+```plantuml  
+@startuml
+class FrontPage {  
+  - itemsList: Item[]  
+  - currentItem: Item  
+  + removeItem(itemId: string)  
+  + setSelectedItem(item: Item)  
+  + getSelectedItem(): Item  
+  + loadItemsList(items: Item[])  
+  + getItem(itemId: string): Item  
+}  
+@enduml  
+```  
+- Представляет собой хранилище товвров для продажи и текущий выбранный товар  
+- Содержимт методы:  
+  - для модификации списка товаров  
+  - получения\установки текущего выбранного товара  
+  - получения детальной информации о товаре по его ID  
+
+#### Корзина  
+```plantuml
+@startuml
+class Basket {
+  - listItems: Item[]
+  + addItem(item: Item)
+  + removeItem(item: Item)
+  + itemsCount(): number
+  + getItemsList(): Item[]
+  + itemsAmount(): number
+  + checkItemAvailablity(item: Item): boolean
+  + clearBasket()
+  + checkIfItemInList(itemId: string): boolean
+}
+@enduml
+```
+Представляет собой Корзину сайта, хранит в себе список товаров (Item), имеет методы добавления, удаления получения списка товаров и их количества, а также суммы. Также имеет методы проверки доступности товара, очистки и присутствия товара в корзине.  
