@@ -176,7 +176,7 @@ class FrontPage {
   - itemsList: Item[]  
   - currentItem: Item  
   + removeItem(itemId: string)  
-  + setSelectedItem(item: Item)  
+  + setSelectedItem(itemId: string)  
   + getSelectedItem(): Item  
   + loadItemsList(items: Item[])  
   + getItem(itemId: string): Item  
