@@ -125,7 +125,7 @@ serverAPI.getProductList().then((result) => {
   console.log(`Raw data for product list ${result.data}`)
   if (result.data) {
     const front = new FrontPage(JSON.parse(result.data))
-    console.log(`Response for Product list ${front.itemsList}`)
+    console.log(`Response for Product list ${JSON.stringify(front.itemsList)}`)
   }
 })
 
@@ -147,7 +147,7 @@ const item2 = frontPage.getItem('c101ab44-ed99-4a54-990d-47aa2bb4e7d9')
 if (item2) {
   basket2.addItem(item2)
 }
-const order = new Order(basket, endUser)
+const order = new Order(basket2, endUser, 'cash')
 console.log(`Request order: ${JSON.stringify(order)}`)
 serverAPI.postOrder(order).then((result) => {
   console.log(`Result for order: ${JSON.stringify(result)}`)

@@ -1,4 +1,4 @@
-import { IBuyer, IOrder } from '.'
+import { IBuyer, IOrder, Payment } from '.'
 import { Basket } from '../components/models/basket'
 
 export class Order implements IOrder {
@@ -9,8 +9,8 @@ export class Order implements IOrder {
   total: number
   items: string[]
 
-  constructor(basket: Basket, user: IBuyer) {
-    this.payment = user.payment!
+  constructor(basket: Basket, user: IBuyer, payment: Payment) {
+    this.payment = payment
     this.email = user.email!
     this.phone = user.phone!
     this.address = user.address!
