@@ -1,3 +1,5 @@
+import { Basket } from "./basket";
+
 export type ApiPostMethods = "POST" | "PUT" | "DELETE";
 
 export interface IApi {
@@ -24,8 +26,14 @@ export interface IAdmin extends IUser {
 }
 
 export interface IOrder {
-    items: IItem[];
-    user: IEndUser;
+  payment: string
+  email: string
+  phone: string
+  address: string
+  total: number
+  items: string[]
+
+  getOrderJSON(): string
 }
 
 export interface IItem {

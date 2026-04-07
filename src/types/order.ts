@@ -1,11 +1,33 @@
-import { IEndUser, IItem, IOrder } from ".";
+import { IEndUser, IOrder } from ".";
+import { Basket } from "./basket";
 
 export class Order implements IOrder {
-  items: IItem[];
-  user: IEndUser;
+  payment: string
+  email: string
+  phone: string
+  address: string
+  total: number
+  items: string[]
 
-  constructor (items: IItem[], user: IEndUser) {
-    this.items = items;
-    this.user = user;
+
+  constructor (basket: Basket, user: IEndUser) {
+    this.payment = user.payment!!;
+    this.email = user.email!!;
+    this.phone = user.phone!!;
+    this.address = user.address!!;
+    this.total = basket.itemsAmount();
+    this.items = basket.getItemsList().map(item => item.id);
+  }
+
+  getOrderJSON(): string {
+    const order = {
+      "payment": this.payment,
+      "email": this.email,
+      "phone": this.phone,
+      "address": this.address,
+      "total": this.total,
+      "items": this.items
+    }
+    return JSON.stringify(order);
   }
 }

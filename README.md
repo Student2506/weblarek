@@ -161,8 +161,14 @@ class Item {
 ```plantuml  
 @startuml  
 class Order {  
-  +items: Item[]  
-  +user: EndUser  
+  +payment: string
+  +email: string
+  +phone: string
+  +address: string
+  +total: number
+  +items: string[]
+
+  +getOrderJSON(): string
 }  
 @enduml  
 ```  
@@ -206,3 +212,16 @@ class Basket {
 @enduml
 ```
 Представляет собой Корзину сайта, хранит в себе список товаров (Item), имеет методы добавления, удаления получения списка товаров и их количества, а также суммы. Также имеет методы проверки доступности товара, очистки и присутствия товара в корзине.  
+
+### Слой коммуникации
+####
+```plantuml
+@startuml
+class ServerAPI {
+  - baseURL: string
+  + getProductList(): ServerResponse
+  + getProductItem(id: string): ServerResponse
+  + postOrder(order: Order): ServerResponse
+}
+@enduml
+```
