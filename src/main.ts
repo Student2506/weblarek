@@ -1,4 +1,5 @@
 import './scss/styles.scss'
+import { API } from './types/api'
 import { Basket } from './types/basket'
 import { EndUser } from './types/enduser'
 import { FrontPage } from './types/frontpage'
@@ -28,22 +29,23 @@ if (firstItem) {
 const items = basket.getItemsList()
 console.log(`Basket ${JSON.stringify(items, null, 2)}`)
 
-const serverAPI = new ServerAPI(API_URL)
+const api = new API()
+const serverAPI = new ServerAPI(API_URL, api)
 serverAPI.getProductList().then((result) => {
   // frontPage = new FrontPage(result.data);
-  console.log(result.data)
+  console.log(`Raw data for product list ${result.data}`)
   if (result.data) {
     const front = new FrontPage(JSON.parse(result.data))
-    console.log(front.itemsList)
+    console.log(`Response for Product list ${front.itemsList}`)
   }
 })
 
 serverAPI
   .getProductItem('854cef69-976d-4c2a-a18c-2aa45046c390')
   .then((result) => {
-    console.log(result.data)
+    console.log(`Response for Product Item ${result.data}`)
     if (result.data) {
-      console.log(JSON.parse(result.data))
+      console.log(`Data for product Item ${JSON.parse(result.data)}`)
     }
   })
 
