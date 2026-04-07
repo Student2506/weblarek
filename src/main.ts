@@ -8,7 +8,12 @@ import { API_URL } from './utils/constants'
 import { apiProducts } from './utils/data'
 import { Api } from './components/base/Api'
 
-const endUser = new EndUser('Spb Vosstania 1', 'card', 'test@test.ru', '+71234567890')
+const endUser = new EndUser(
+  'Spb Vosstania 1',
+  'card',
+  'test@test.ru',
+  '+71234567890',
+)
 console.log(`User ${JSON.stringify(endUser.getUserData(), null, 2)}`)
 endUser.saveUserData('Ekt Vosstania 2', null, null, '+78437654321')
 console.log(`Change user ${JSON.stringify(endUser.getUserData(), null, 2)}`)
@@ -24,10 +29,14 @@ console.log(
   `Массив из каталога ${JSON.stringify(frontPage.itemsList, null, 2)}`,
 )
 const itemsFront = frontPage.getItemList()
-console.log(`Main storage ${JSON.stringify(itemsFront)}`);
+console.log(`Main storage ${JSON.stringify(itemsFront)}`)
 const item = frontPage.getItem('854cef69-976d-4c2a-a18c-2aa45046c390')
-console.log(`Item 854cef69-976d-4c2a-a18c-2aa45046c390: ${JSON.stringify(item)}`)
-console.log(`Before selected item ${JSON.stringify(frontPage.getSelectedItem())}`)
+console.log(
+  `Item 854cef69-976d-4c2a-a18c-2aa45046c390: ${JSON.stringify(item)}`,
+)
+console.log(
+  `Before selected item ${JSON.stringify(frontPage.getSelectedItem())}`,
+)
 frontPage.setSelectedItem('854cef69-976d-4c2a-a18c-2aa45046c390')
 console.log(`Selected Item ${JSON.stringify(frontPage.getSelectedItem())}`)
 export const apiProducts2 = {
@@ -50,15 +59,14 @@ export const apiProducts2 = {
       category: 'другое',
       price: 1450,
     },
-  ]
+  ],
 }
 frontPage.loadItemsList(apiProducts2.items)
 const itemsFront2 = frontPage.getItemList()
-console.log(`Main storage new ${JSON.stringify(itemsFront2)}`);
-frontPage.removeItem("c101ab44-ed99-4a54-990d-47aa2bb4e7d9")
+console.log(`Main storage new ${JSON.stringify(itemsFront2)}`)
+frontPage.removeItem('c101ab44-ed99-4a54-990d-47aa2bb4e7d9')
 const itemsFront3 = frontPage.getItemList()
-console.log(`Main storage Removed item ${JSON.stringify(itemsFront3)}`);
-
+console.log(`Main storage Removed item ${JSON.stringify(itemsFront3)}`)
 
 const frontPage2 = new FrontPage(apiProducts.items)
 const basket = new Basket()
@@ -78,21 +86,27 @@ const itemsCount = basket.itemsCount()
 console.log(`Items count ${itemsCount}`)
 const itemsAmount = basket.itemsAmount()
 console.log(`Items amount ${itemsAmount}`)
-if (firstItem){
+if (firstItem) {
   const isAvailable = basket.checkItemAvailablity(firstItem)
-  console.log(`Item 412bcf81-7e75-4e70-bdb9-d3c73c9803b7 is available: ${isAvailable}`)
+  console.log(
+    `Item 412bcf81-7e75-4e70-bdb9-d3c73c9803b7 is available: ${isAvailable}`,
+  )
 }
-const unavailabeItem = frontPage2.getItem('b06cde61-912f-4663-9751-09956c0eed67')
+const unavailabeItem = frontPage2.getItem(
+  'b06cde61-912f-4663-9751-09956c0eed67',
+)
 if (unavailabeItem) {
   basket.addItem(unavailabeItem)
   const isItAvailable = basket.checkItemAvailablity(unavailabeItem)
-  console.log(`Check if b06cde61-912f-4663-9751-09956c0eed67 is available: ${isItAvailable}`)
+  console.log(
+    `Check if b06cde61-912f-4663-9751-09956c0eed67 is available: ${isItAvailable}`,
+  )
 }
 if (firstItem) {
-  const isInBasket = basket.checkIfItemInList(firstItem.id);
+  const isInBasket = basket.checkIfItemInList(firstItem.id)
   console.log(`Item ${firstItem.id} is in basket: ${isInBasket}`)
 }
-if (firstItem){
+if (firstItem) {
   basket.removeItem(firstItem)
   console.log(`Basket items removal ${JSON.stringify(basket.getItemsList())}`)
 }
