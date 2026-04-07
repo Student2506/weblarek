@@ -8,18 +8,14 @@ export interface IApi {
     method?: ApiPostMethods,
   ): Promise<T>
 }
-export interface IUser {
+export interface IBuyer {
+  address: string | null
+  payment: Payment | null
   email: string | null
   phone: string | null
 }
 
-export interface IEndUser extends IUser {
-  address: string | null
-  orders: IOrder[]
-  payment: Payment | null
-}
-
-export interface IAdmin extends IUser {
+export interface IAdmin {
   rigths: string[]
 }
 
