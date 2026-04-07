@@ -33,13 +33,8 @@ export interface IItem {
     description: string;
     image: string;
     title: string;
-    category: ICategory[];
+    category: string;
     price: number | null;
-}
-
-export interface ICategory {
-    key: string
-    name: string
 }
 
 export type Payment = ("cash" | "card");

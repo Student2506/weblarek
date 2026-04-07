@@ -150,7 +150,7 @@ class Item {
  +description: string  
  +image: string  
  +title: string  
- +category: Category[]  
+ +category: string  
  +price: number | null  
 }  
 @enduml  
