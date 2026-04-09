@@ -123,6 +123,82 @@ class EndUser {
     - удадения\сброса данных  
 
 
+#### Интерфейс IApi  
+```typescript  
+interface IApi {  
+  get<T extends object>(uri: string): Promise<T>  // метод отправки GET запроса, дженерик, возрващает Promise с объектом типа T, на вход принимет частичную ссылку на ресурс  
+  post<T extends object>(  // метод отправки POST запроса, возвращает Promise с объектом класса T, на вход принимет частичную ссылку на ресурс, данные для отправки, и опционнально, тип отправки (POST, PUT или DELETE)  
+    uri: string,
+    data: object,
+    method?: ApiPostMethods,  
+  ): Promise<T>  
+}  
+```  
+Является базовым для класса служащего для работы с API  
+
+#### Интерфейс IBuyer  
+```typescript  
+export interface IBuyer {
+  address: string  //поле Адрес, тип строка
+  payment: Payment | null // поле Тип Платежа, тип кортеж из строк "cash", "card", может быть null
+  email: string  // поле E-mail, тип строка
+  phone: string  // поле Телефон, тип строка
+}
+```
+Является базовым для интерфейса IOrder, содержит в себе данные покупателя  
+
+#### Интерфейс IOrder  
+```typescript
+export interface IOrder extends IBuyer {
+  total: number  // поле Сумма, тип число
+  items: string[] // поле Товарый, тип массив строк, содержит в себе ID товаров в заказе  
+}
+```
+Служит для описания товаров и даннхы пользователя для отправки на сервер, для выполнения заказа
+
+#### Интерфейс IItem  
+```typescript
+export interface IItem {
+  id: string  // ID товара, тип строка
+  description: string  // Описание товара, тип строка
+  image: string  // Ссылка на изображение товара, тип строка
+  title: string  // Название товара, тип строка  
+  category: string  // Категория\Тип товара, тип строка
+  price: number // Цена товара, тип число, может null
+}
+```
+Служит для описания товара, содержит общие свозйства такие как Наименование, Описание и т.д.
+
+#### Тип Payment
+```typescript
+exprt type Payment = 'cash' | 'card' //Кортеж из строк, 'cash' и 'card'
+```
+Представляет из себя тип описывающий, тип платежа при заказе товаров на сайте  
+
+#### Тип ValidationErrors
+```typescript
+export type ValidationErrors = Partial<Record<keyof IBuyer, string>>
+```
+Представляет из себя тип словарь\объект содержащий, в качестве ключа, поле интерфейса IBuyer и строку - причину почему валидация не пройдена
+
+#### Тип OrderResponse
+```typescript
+export interface OrderResponse {
+  id: string  // ID заказа
+  total: number // Сумма к уплате
+}
+```
+Представляет из себя тип, возвращаемый сервером, и подтверждающий, что заказ был принят к обработке  
+
+#### Тип ProductResponse
+```typescript
+export interface ProductResponse {
+  total: number  // Число товаров в ответе
+  items: IItem[]  // Массив товаров
+}
+```
+Представляет из себя тип, возвращаемый сервером, содержит в себе количество и сам массив товаров к продаже  
+
 ### Компоненты  
 #### Главный каталог товаров  
 ```typescript  
