@@ -14,7 +14,7 @@ export class Catalog {
       return this.currentItem
     }
   }
-  loadItemsList(items: IItem[]) {
+  setItemsList(items: IItem[]) {
     this.itemsList = items
   }
 

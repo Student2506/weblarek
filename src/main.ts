@@ -33,7 +33,7 @@ endUser2.saveUserData({ address: '' })
 console.log(`User with no data ${JSON.stringify(endUser2.getUserData())}`)
 
 const frontPage = new Catalog()
-frontPage.loadItemsList(apiProducts.items)
+frontPage.setItemsList(apiProducts.items)
 console.log(
   `Массив из каталога ${JSON.stringify(frontPage.getItemList(), null, 2)}`,
 )
@@ -70,12 +70,12 @@ export const apiProducts2 = {
     },
   ],
 }
-frontPage.loadItemsList(apiProducts2.items)
+frontPage.setItemsList(apiProducts2.items)
 const itemsFront2 = frontPage.getItemList()
 console.log(`Main storage new ${JSON.stringify(itemsFront2)}`)
 
 const frontPage2 = new Catalog()
-frontPage2.loadItemsList(apiProducts.items)
+frontPage2.setItemsList(apiProducts.items)
 const basket = new Basket()
 const firstItem = frontPage2.getItem('412bcf81-7e75-4e70-bdb9-d3c73c9803b7')
 if (firstItem) {
@@ -112,14 +112,14 @@ if (basket.getItemsList().length === 0) {
 
 const api = new Api(API_URL)
 const serverAPI = new ServerAPI(api)
+const front = new Catalog()
 serverAPI
   .getProductList()
   .then((result) => {
     console.log(`Raw data for product list ${result}`)
     if (result && result.items) {
       try {
-        const front = new Catalog()
-        front.loadItemsList(result.items)
+        front.setItemsList(result.items)
         console.log(
           `Response for Product list ${JSON.stringify(front.getItemList())}`,
         )
