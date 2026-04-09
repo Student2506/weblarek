@@ -100,6 +100,7 @@ Presenter - презентер содержит основную логику п
 
 ### Данные  
 #### Класс User  
+
 ```plantuml
 @startuml  
 interface User {  
@@ -132,30 +133,7 @@ class EndUser implements User {
     - получения\изменения данных  
     - удадения\сброса данных  
 
-#### Класс Admin  
-```plantuml  
-@startuml  
-class Admin implements User {  
-  +rights: string[]  
-}  
-@enduml  
-```  
-содержит данные для работы адмниа\модератора сайта  
 
-#### Класс Item  
-```plantuml  
-@startuml  
-class Item {  
- +id: string  
- +description: string  
- +image: string  
- +title: string  
- +category: string  
- +price: number | null  
-}  
-@enduml  
-```  
-Является реализацией товара\услуги на сайте  
 
 #### Класс Order  
 ```plantuml  

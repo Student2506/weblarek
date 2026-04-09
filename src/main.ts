@@ -2,7 +2,6 @@ import './scss/styles.scss'
 import { Basket } from './components/models/basket'
 import { EndUser } from './components/models/enduser'
 import { Catalog } from './components/models/catalog'
-import { Order } from './types/order'
 import { ServerAPI } from './components/models/serverapi'
 import { API_URL } from './utils/constants'
 import { apiProducts } from './utils/data'
@@ -135,9 +134,8 @@ const item2 = frontPage.getItem('c101ab44-ed99-4a54-990d-47aa2bb4e7d9')
 if (item2) {
   basket2.addItem(item2)
 }
-const order = new Order(basket2, endUser.getUserData(), 'cash')
-console.log(`Request order: ${JSON.stringify(order)}`)
-serverAPI.postOrder(order).then((result) => {
+endUser.saveUserData({'payment': 'cash'})
+serverAPI.postOrder({...endUser.getUserData(), total: basket2.itemsAmount(), items: basket2.getItemsList().map(item=>item.id)}).then((result) => {
   console.log(`Result for order: ${JSON.stringify(result)}`)
 }).catch(error => {
   console.error(`Post Order error ${error}`)
