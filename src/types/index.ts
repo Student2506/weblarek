@@ -32,3 +32,13 @@ export interface IItem {
 
 export type Payment = 'cash' | 'card'
 export type ValidationErrors = Partial<Record<keyof IBuyer, string>>
+
+export interface OrderResponse {
+  id: string
+  total: number
+}
+
+export interface ProductResponse {
+  total: number
+  items: IItem[]
+}

@@ -1,6 +1,4 @@
-import { IApi, IOrder } from '../../types'
-import { OrderResponse } from '../../types/order_response'
-import { ProductResponse } from '../../types/product_response'
+import { IApi, IOrder, OrderResponse, ProductResponse } from '../../types'
 
 export class ServerAPI {
   private api: IApi
