@@ -15,16 +15,21 @@ endUser.saveUserData({
   phone: '+71234567890',
 })
 console.log(`User ${JSON.stringify(endUser.getUserData(), null, 2)}`)
-endUser.saveUserData({address: 'Ekt Vosstania 2', phone: '+78437654321'})
+endUser.saveUserData({ address: 'Ekt Vosstania 2', phone: '+78437654321' })
 console.log(`Change user ${JSON.stringify(endUser.getUserData(), null, 2)}`)
 endUser.clearUserData()
 console.log(`Clear user ${JSON.stringify(endUser.getUserData(), null, 2)}`)
-endUser.saveUserData({address: 'Spb Vosstania 1', payment: 'card', email: 'test@test.ru', phone: '+71234567890'})
+endUser.saveUserData({
+  address: 'Spb Vosstania 1',
+  payment: 'card',
+  email: 'test@test.ru',
+  phone: '+71234567890',
+})
 const endUser2 = new EndUser()
-endUser2.saveUserData({address: 'test@test.ru'})
+endUser2.saveUserData({ address: 'test@test.ru' })
 const checkUser = endUser2.checkUserData()
 console.log(`Check user ${JSON.stringify(checkUser)}`)
-endUser2.saveUserData({address: ""})
+endUser2.saveUserData({ address: '' })
 console.log(`User with no data ${JSON.stringify(endUser2.getUserData())}`)
 
 const frontPage = new Catalog()
@@ -107,23 +112,27 @@ if (basket.getItemsList().length === 0) {
 
 const api = new Api(API_URL)
 const serverAPI = new ServerAPI(api)
-serverAPI.getProductList().then((result) => {
-
-  console.log(`Raw data for product list ${result}`)
-  if (result && result.items) {
-    try {
-      const front = new Catalog()
-      front.loadItemsList(result.items)
-      console.log(`Response for Product list ${JSON.stringify(front.getItemList())}`)
-    } catch (parsingError) {
-      console.error(`Has parsing error ${parsingError}`)
+serverAPI
+  .getProductList()
+  .then((result) => {
+    console.log(`Raw data for product list ${result}`)
+    if (result && result.items) {
+      try {
+        const front = new Catalog()
+        front.loadItemsList(result.items)
+        console.log(
+          `Response for Product list ${JSON.stringify(front.getItemList())}`,
+        )
+      } catch (parsingError) {
+        console.error(`Has parsing error ${parsingError}`)
+      }
+    } else {
+      console.error('No valuable data')
     }
-  } else {
-    console.error('No valuable data');
-  }
-}).catch((error) => {
-  console.error(`Server failed ${error}`)
-})
+  })
+  .catch((error) => {
+    console.error(`Server failed ${error}`)
+  })
 
 const basket2 = new Basket()
 const item1 = frontPage.getItem('854cef69-976d-4c2a-a18c-2aa45046c390')
@@ -134,9 +143,16 @@ const item2 = frontPage.getItem('c101ab44-ed99-4a54-990d-47aa2bb4e7d9')
 if (item2) {
   basket2.addItem(item2)
 }
-endUser.saveUserData({'payment': 'cash'})
-serverAPI.postOrder({...endUser.getUserData(), total: basket2.itemsAmount(), items: basket2.getItemsList().map(item=>item.id)}).then((result) => {
-  console.log(`Result for order: ${JSON.stringify(result)}`)
-}).catch(error => {
-  console.error(`Post Order error ${error}`)
-})
+endUser.saveUserData({ payment: 'cash' })
+serverAPI
+  .postOrder({
+    ...endUser.getUserData(),
+    total: basket2.itemsAmount(),
+    items: basket2.getItemsList().map((item) => item.id),
+  })
+  .then((result) => {
+    console.log(`Result for order: ${JSON.stringify(result)}`)
+  })
+  .catch((error) => {
+    console.error(`Post Order error ${error}`)
+  })

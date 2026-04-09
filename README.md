@@ -99,32 +99,21 @@ Presenter - презентер содержит основную логику п
 `trigger<T extends object>(event: string, context?: Partial<T>): (data: T) => void` - возвращает функцию, при вызове которой инициализируется требуемое в параметрах событие с передачей в него данных из второго параметра.
 
 ### Данные  
-#### Класс User  
-
-```plantuml
-@startuml  
-interface User {  
-  +email: string  
-  +phone: string  
-}  
-@startuml  
-```  
-Является базовым для организации иерархии пользователей.  
 
 #### Класс EndUser
-```plantuml  
-@startuml  
-class EndUser implements User {  
-  +address: string  
-  +orders: Order[]  
-  +payment: string[]  
+```typescript  
+class EndUser {  
+  private address: string  // поле Адрес, тип строка
+  private payment: Payment | null // поле Тип Платежа, тип строка
+  private email: string // поле E-mail, тип строка
+  private phone: string // поле Телефон, тип строка
+  constructor() {} // пустой/дефолтный конструктор
 
-  + checkUserData(): Error[]  
-  + getUserData(): EndUser  
-  + saveUserData(user: EndUser)  
-  + clearUserData()  
-}  
-@enduml  
+  checkUserData(): ValidationErrors // метод проверки заполныных пользователем данных, возвращает объект, состоящий из строк, указывающих на то, какое поле не заполнено
+  getUserData(): IBuyer // метод позволяющий вернуть данные пользователя, возвращает объект типа IBuyer
+  saveUserData(newData: Partial<IBuyer>) // метод, позволяющий обновить данные пользователя (выборочно), принимет на вход объект типа IBuyer, может использоваться часть полей
+  clearUserData() // метод, позволяющий сборосить данные пользовтеля целиком, ничего не возвращает
+}
 ```
 является реализацией пользователя на сайте:  
  - содержит все данные для работы пользователя (телефон, емайл, адрес доставки, заказы, тип оплаты)  
@@ -134,38 +123,21 @@ class EndUser implements User {
     - удадения\сброса данных  
 
 
-
-#### Класс Order  
-```plantuml  
-@startuml  
-class Order {  
-  +payment: string
-  +email: string
-  +phone: string
-  +address: string
-  +total: number
-  +items: string[]
-
-  +getOrderJSON(): string
-}  
-@enduml  
-```  
-Описывыет соответствие товаров (Item) и покупателя (EndUser)  
-
 ### Компоненты  
-#### Главная старница  
-```plantuml  
-@startuml
-class FrontPage {  
-  - itemsList: Item[]  
-  - currentItem: Item  
-  + removeItem(itemId: string)  
-  + setSelectedItem(itemId: string)  
-  + getSelectedItem(): Item  
-  + loadItemsList(items: Item[])  
-  + getItem(itemId: string): Item  
+#### Главный каталог товаров  
+```typescript  
+class Catalog {  
+  itemsList: IItem[] = []  // массив товаров тип IItem[]
+  currentItem: IItem | null = null // текущий выбранный товар длz демонастрации, тип IItem, может быть null
+
+  constructor() {} // пустой/дефолтный конструктор
+
+  setSelectedItem(item: IItem) // метод для установки текущего выбранного товара
+  getSelectedItem(): IItem | undefined // метод для чтения текущего выбранного товара, undefined до установки/после сброса
+  loadItemsList(items: IItem[]) // метод для загрузки/обновления списка товаров, на вход принимает массив IItem, ничего не возвращает
+  getItemList(): IItem[] // метод для чтения текущего списка товаров, возвращает список IItem, в т.ч. и пустой при их отсутствии
+  getItem(itemId: string): IItem | undefined // метод получения одного товара по ID, принмает на вход строку с ID товара, возвращает IItem или undefined, если заданный на вход ID отсутствует
 }  
-@enduml  
 ```  
 - Представляет собой хранилище товвров для продажи и текущий выбранный товар  
 - Содержимт методы:  
@@ -174,32 +146,33 @@ class FrontPage {
   - получения детальной информации о товаре по его ID  
 
 #### Корзина  
-```plantuml
-@startuml
-class Basket {
-  - listItems: Item[]
-  + addItem(item: Item)
-  + removeItem(item: Item)
-  + itemsCount(): number
-  + getItemsList(): Item[]
-  + itemsAmount(): number
-  + checkItemAvailablity(item: Item): boolean
-  + clearBasket()
-  + checkIfItemInList(itemId: string): boolean
-}
-@enduml
-```
-Представляет собой Корзину сайта, хранит в себе список товаров (Item), имеет методы добавления, удаления получения списка товаров и их количества, а также суммы. Также имеет методы проверки доступности товара, очистки и присутствия товара в корзине.  
+```typescript  
+class Basket {  
+  private listItems: IItem[] // список товаров в корзине, тип IItem  
+  constructor() {} // пустой/дефолтный констркутор  
 
-### Слой коммуникации
-####
-```plantuml
-@startuml
-class ServerAPI {
-  - baseURL: string
-  + getProductList(): ServerResponse
-  + getProductItem(id: string): ServerResponse
-  + postOrder(order: Order): ServerResponse
+  addItem(item: IItem) // метод добавления товара в корзину, на вход принмает экземпляр IItem  
+  removeItem(item: IItem) // метод удаления товара из корзины, на вход принимет экземляр IItem  
+  itemsCount(): number // метод воврзащающий количество товаров в корзине, возвращает число  
+  getItemsList(): IItem[] // метод поулчения списка товаров в корзине, возвращает список IItem  
+  itemsAmount(): number // метод получения суммы товаров в корзине, возвращает число  
+  clearBasket() // метод очистки корзины от товаров, не возвращает значения
+  checkIfItemInList(itemId: string): boolean // метод проверки наличия товара в корзине, возращает true в случае наличия и false в случае отсутствия  
 }
-@enduml
-```
+```  
+Представляет собой Корзину сайта, хранит в себе список товаров (IItem), имеет методы добавления, удаления получения списка товаров и их количества, а также суммы. Также имеет методы очистки корзины и проверки наличия товара в корзине.  
+
+### Слой коммуникации  
+#### Класс ServerAPI  
+```typescript  
+class ServerAPI {  
+  private api: IApi  // поле содеражщее ссылку на интерфейс типа IApi  
+
+  constructor(api: IApi) // конструктор класса, принимет на вход ссылку на интерфейс типа IApi  
+
+  async getProductList(): Promise<ProductResponse> // метод получения списка товаров с сервера, возвращает Promise с данными типа ProductResponse  
+  async postOrder(order: IOrder): Promise<OrderResponse> // метод создания заказа на сервере, на вход получает данные типа IOrder, возвращает Promise с данными типа OrderResponse  
+}  
+```  
+Класс является инструментарием для работы с сервером, работающим по REST API  
+При создании получает извне ссылку на IApi, использует её для получения данных с сервера.  

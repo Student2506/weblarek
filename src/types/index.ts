@@ -18,7 +18,6 @@ export interface IBuyer {
 export interface IOrder extends IBuyer {
   total: number
   items: string[]
-
 }
 
 export interface IItem {

@@ -12,7 +12,11 @@ export class ServerAPI {
     return data
   }
   async postOrder(order: IOrder): Promise<OrderResponse> {
-    const response = await this.api.post<OrderResponse>(`/order/`, order, 'POST')
+    const response = await this.api.post<OrderResponse>(
+      `/order/`,
+      order,
+      'POST',
+    )
     console.log(`Response from server ${JSON.stringify(response)}`)
     return response
   }
