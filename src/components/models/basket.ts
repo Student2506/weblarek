@@ -1,7 +1,9 @@
 import { IItem } from '../../types'
 
 export class Basket {
-  listItems: IItem[] = []
+  private listItems: IItem[] = []
+
+  constructor() {}
 
   addItem(item: IItem) {
     this.listItems.push(item)
@@ -23,14 +25,11 @@ export class Basket {
       return item.price != null ? sum + item.price : sum
     }, 0)
   }
-  checkItemAvailablity(item: IItem): boolean {
-    return item.price !== null
-  }
+
   clearBasket() {
     this.listItems.length = 0
   }
   checkIfItemInList(itemId: string): boolean {
-    const itemIndex = this.listItems.findIndex((el) => itemId === el.id)
-    return itemIndex !== -1
+    return this.listItems.some((el) => itemId === el.id)
   }
 }

@@ -3,7 +3,7 @@ import { OrderResponse } from '../../types/order_response'
 import { ProductResponse } from '../../types/product_response'
 
 export class ServerAPI {
-  api: IApi
+  private api: IApi
 
   constructor(api: IApi) {
     this.api = api
