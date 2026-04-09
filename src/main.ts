@@ -8,26 +8,30 @@ import { API_URL } from './utils/constants'
 import { apiProducts } from './utils/data'
 import { Api } from './components/base/Api'
 
-const endUser = new EndUser(
-  'Spb Vosstania 1',
-  'card',
-  'test@test.ru',
-  '+71234567890',
-)
+const endUser = new EndUser()
+endUser.saveUserData({
+  address: 'Spb Vosstania 1',
+  payment: 'card',
+  email: 'test@test.ru',
+  phone: '+71234567890',
+})
 console.log(`User ${JSON.stringify(endUser.getUserData(), null, 2)}`)
-endUser.saveUserData('Ekt Vosstania 2', null, null, '+78437654321')
+endUser.saveUserData({address: 'Ekt Vosstania 2', phone: '+78437654321'})
 console.log(`Change user ${JSON.stringify(endUser.getUserData(), null, 2)}`)
 endUser.clearUserData()
 console.log(`Clear user ${JSON.stringify(endUser.getUserData(), null, 2)}`)
-endUser.saveUserData('Spb Vosstania 1', 'card', 'test@test.ru', '+71234567890')
-const endUser2 = new EndUser("", null, 'test@test.ru', "")
+endUser.saveUserData({address: 'Spb Vosstania 1', payment: 'card', email: 'test@test.ru', phone: '+71234567890'})
+const endUser2 = new EndUser()
+endUser2.saveUserData({address: 'test@test.ru'})
 const checkUser = endUser2.checkUserData()
 console.log(`Check user ${JSON.stringify(checkUser)}`)
+endUser2.saveUserData({address: ""})
+console.log(`User with no data ${JSON.stringify(endUser2.getUserData())}`)
 
 const frontPage = new Catalog()
 frontPage.loadItemsList(apiProducts.items)
 console.log(
-  `Массив из каталога ${JSON.stringify(frontPage.itemsList, null, 2)}`,
+  `Массив из каталога ${JSON.stringify(frontPage.getItemList(), null, 2)}`,
 )
 const itemsFront = frontPage.getItemList()
 console.log(`Main storage ${JSON.stringify(itemsFront)}`)
@@ -85,22 +89,7 @@ const itemsCount = basket.itemsCount()
 console.log(`Items count ${itemsCount}`)
 const itemsAmount = basket.itemsAmount()
 console.log(`Items amount ${itemsAmount}`)
-if (firstItem) {
-  const isAvailable = basket.checkItemAvailablity(firstItem)
-  console.log(
-    `Item 412bcf81-7e75-4e70-bdb9-d3c73c9803b7 is available: ${isAvailable}`,
-  )
-}
-const unavailabeItem = frontPage2.getItem(
-  'b06cde61-912f-4663-9751-09956c0eed67',
-)
-if (unavailabeItem) {
-  basket.addItem(unavailabeItem)
-  const isItAvailable = basket.checkItemAvailablity(unavailabeItem)
-  console.log(
-    `Check if b06cde61-912f-4663-9751-09956c0eed67 is available: ${isItAvailable}`,
-  )
-}
+
 if (firstItem) {
   const isInBasket = basket.checkIfItemInList(firstItem.id)
   console.log(`Item ${firstItem.id} is in basket: ${isInBasket}`)
@@ -126,7 +115,7 @@ serverAPI.getProductList().then((result) => {
     try {
       const front = new Catalog()
       front.loadItemsList(result.items)
-      console.log(`Response for Product list ${JSON.stringify(front.itemsList)}`)
+      console.log(`Response for Product list ${JSON.stringify(front.getItemList())}`)
     } catch (parsingError) {
       console.error(`Has parsing error ${parsingError}`)
     }
@@ -146,7 +135,7 @@ const item2 = frontPage.getItem('c101ab44-ed99-4a54-990d-47aa2bb4e7d9')
 if (item2) {
   basket2.addItem(item2)
 }
-const order = new Order(basket2, endUser, 'cash')
+const order = new Order(basket2, endUser.getUserData(), 'cash')
 console.log(`Request order: ${JSON.stringify(order)}`)
 serverAPI.postOrder(order).then((result) => {
   console.log(`Result for order: ${JSON.stringify(result)}`)

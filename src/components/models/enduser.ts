@@ -1,44 +1,35 @@
-import { IBuyer, Payment, Error } from '../../types'
+import { Payment, Error, IBuyer } from '../../types'
 
-export class EndUser implements IBuyer {
-  address: string
-  payment: Payment | null = null
-  email: string
-  phone: string
-
-  constructor(
-    address: string,
-    payment: Payment | null,
-    email: string,
-    phone: string,
-  ) {
-    this.address = address
-    this.payment = payment
-    this.email = email
-    this.phone = phone
-  }
+export class EndUser {
+  private address: string = ""
+  private payment: Payment | null = null
+  private email: string = ""
+  private phone: string = ""
+  constructor() {}
 
   checkUserData(): Error[] {
     const errors: Error[] = []
-    if (this.address === "") errors.push(new Error('Email is absent'))
+    if (this.address === "") errors.push(new Error('Address is absent'))
     if (!this.payment) errors.push(new Error('Payment is absent'))
-    if (this.email === "" && this.phone === "")
-      errors.push(new Error('Email or Phone is manadatory'))
+    if (this.email === "") errors.push(new Error('Email is manadatory'))
+    if (this.phone === "") errors.push(new Error('Phone is manadatory'))
     return errors
   }
-  getUserData(): EndUser {
-    return this
+  getUserData(): IBuyer {
+    return {
+      address: this.address,
+      payment: this.payment,
+      email: this.email,
+      phone: this. phone
+    }
   }
   saveUserData(
-    address: string | null,
-    payment: Payment | null,
-    email: string | null,
-    phone: string | null,
+    newData: Partial<IBuyer>
   ) {
-    if (address) this.address = address
-    if (payment) this.payment = payment
-    if (email) this.email = email
-    if (phone) this.phone = phone
+    if (newData.address !== undefined) this.address = newData.address
+    if (newData.payment) this.payment = newData.payment
+    if (newData.email !== undefined) this.email = newData.email
+    if (newData.phone !== undefined) this.phone = newData.phone
   }
   clearUserData() {
     this.address = ""
