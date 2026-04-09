@@ -19,7 +19,6 @@ export interface IOrder extends IBuyer {
   total: number
   items: string[]
 
-  getOrderJSON(): string
 }
 
 export interface IItem {

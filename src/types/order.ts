@@ -18,15 +18,5 @@ export class Order implements IOrder {
     this.items = basket.getItemsList().map((item) => item.id)
   }
 
-  getOrderJSON(): string {
-    const order = {
-      payment: this.payment,
-      email: this.email,
-      phone: this.phone,
-      address: this.address,
-      total: this.total,
-      items: this.items,
-    }
-    return JSON.stringify(order)
-  }
+
 }
