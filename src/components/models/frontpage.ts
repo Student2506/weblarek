@@ -1,10 +1,10 @@
-import { Item } from '../../types/item'
+import { IItem } from '../../types'
 
 export class FrontPage {
-  itemsList: Item[]
-  currentItem: Item | null = null
+  itemsList: IItem[]
+  currentItem: IItem | null = null
 
-  constructor(itemList: Item[]) {
+  constructor(itemList: IItem[]) {
     this.itemsList = itemList
   }
 
@@ -21,19 +21,19 @@ export class FrontPage {
       this.currentItem = this.itemsList[itemIndex]
     }
   }
-  getSelectedItem(): Item | undefined {
+  getSelectedItem(): IItem | undefined {
     if (this.currentItem) {
       return this.currentItem
     }
   }
-  loadItemsList(items: Item[]) {
+  loadItemsList(items: IItem[]) {
     this.itemsList = items
   }
 
-  getItemList(): Item[] {
+  getItemList(): IItem[] {
     return this.itemsList
   }
-  getItem(itemId: string): Item | undefined {
+  getItem(itemId: string): IItem | undefined {
     return this.itemsList.find((item) => item.id === itemId)
   }
 }

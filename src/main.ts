@@ -121,22 +121,21 @@ if (basket.getItemsList().length === 0) {
 const api = new Api(API_URL)
 const serverAPI = new ServerAPI(api)
 serverAPI.getProductList().then((result) => {
-  // frontPage = new FrontPage(result.data);
-  console.log(`Raw data for product list ${result.data}`)
-  if (result.data) {
-    const front = new FrontPage(JSON.parse(result.data))
-    console.log(`Response for Product list ${JSON.stringify(front.itemsList)}`)
-  }
-})
 
-serverAPI
-  .getProductItem('854cef69-976d-4c2a-a18c-2aa45046c390')
-  .then((result) => {
-    console.log(`Response for Product Item ${result.data}`)
-    if (result.data) {
-      console.log(`Data for product Item ${JSON.parse(result.data)}`)
+  console.log(`Raw data for product list ${result}`)
+  if (result && result.items) {
+    try {
+      const front = new FrontPage(result.items)
+      console.log(`Response for Product list ${JSON.stringify(front.itemsList)}`)
+    } catch (parsingError) {
+      console.error(`Has parsing error ${parsingError}`)
     }
-  })
+  } else {
+    console.error('No valuable data');
+  }
+}).catch((reason) => {
+  console.error(`Server failed ${reason}`)
+})
 
 const basket2 = new Basket()
 const item1 = frontPage.getItem('854cef69-976d-4c2a-a18c-2aa45046c390')
@@ -151,4 +150,6 @@ const order = new Order(basket2, endUser, 'cash')
 console.log(`Request order: ${JSON.stringify(order)}`)
 serverAPI.postOrder(order).then((result) => {
   console.log(`Result for order: ${JSON.stringify(result)}`)
+}).catch(error => {
+  console.error(`Post Order error ${error}`)
 })

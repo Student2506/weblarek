@@ -1,12 +1,12 @@
-import { Item } from '../../types/item'
+import { IItem } from '../../types'
 
 export class Basket {
-  listItems: Item[] = []
+  listItems: IItem[] = []
 
-  addItem(item: Item) {
+  addItem(item: IItem) {
     this.listItems.push(item)
   }
-  removeItem(item: Item) {
+  removeItem(item: IItem) {
     const itemIndex = this.listItems.findIndex((el) => el.id === item.id)
     if (itemIndex !== -1) {
       this.listItems.splice(itemIndex, 1)
@@ -15,7 +15,7 @@ export class Basket {
   itemsCount(): number {
     return this.listItems.length
   }
-  getItemsList(): Item[] {
+  getItemsList(): IItem[] {
     return this.listItems
   }
   itemsAmount(): number {
@@ -23,7 +23,7 @@ export class Basket {
       return item.price != null ? sum + item.price : sum
     }, 0)
   }
-  checkItemAvailablity(item: Item): boolean {
+  checkItemAvailablity(item: IItem): boolean {
     return item.price !== null
   }
   clearBasket() {
