@@ -32,10 +32,4 @@ export interface IItem {
 }
 
 export type Payment = 'cash' | 'card'
-
-export class Error {
-  reason: string
-  constructor(reason: string) {
-    this.reason = reason
-  }
-}
+export type ValidationErrors = Partial<Record<keyof IBuyer, string>>

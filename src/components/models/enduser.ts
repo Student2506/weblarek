@@ -1,4 +1,4 @@
-import { Payment, Error, IBuyer } from '../../types'
+import { Payment, IBuyer, ValidationErrors } from '../../types'
 
 export class EndUser {
   private address: string = ""
@@ -7,12 +7,12 @@ export class EndUser {
   private phone: string = ""
   constructor() {}
 
-  checkUserData(): Error[] {
-    const errors: Error[] = []
-    if (this.address === "") errors.push(new Error('Address is absent'))
-    if (!this.payment) errors.push(new Error('Payment is absent'))
-    if (this.email === "") errors.push(new Error('Email is manadatory'))
-    if (this.phone === "") errors.push(new Error('Phone is manadatory'))
+  checkUserData(): ValidationErrors {
+    const errors: ValidationErrors = {}
+    if (this.address === "") errors["address"] = 'Address is absent'
+    if (!this.payment) errors["payment"] = 'Payment is absent'
+    if (this.email === "") errors["email"] = 'Email is manadatory'
+    if (this.phone === "") errors["phone"] = 'Phone is manadatory'
     return errors
   }
   getUserData(): IBuyer {
