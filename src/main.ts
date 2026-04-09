@@ -1,7 +1,7 @@
 import './scss/styles.scss'
 import { Basket } from './components/models/basket'
 import { EndUser } from './components/models/enduser'
-import { FrontPage } from './components/models/frontpage'
+import { Catalog } from './components/models/catalog'
 import { Order } from './types/order'
 import { ServerAPI } from './components/models/serverapi'
 import { API_URL } from './utils/constants'
@@ -20,11 +20,12 @@ console.log(`Change user ${JSON.stringify(endUser.getUserData(), null, 2)}`)
 endUser.clearUserData()
 console.log(`Clear user ${JSON.stringify(endUser.getUserData(), null, 2)}`)
 endUser.saveUserData('Spb Vosstania 1', 'card', 'test@test.ru', '+71234567890')
-const endUser2 = new EndUser(null, null, 'test@test.ru', null)
+const endUser2 = new EndUser("", null, 'test@test.ru', "")
 const checkUser = endUser2.checkUserData()
 console.log(`Check user ${JSON.stringify(checkUser)}`)
 
-const frontPage = new FrontPage(apiProducts.items)
+const frontPage = new Catalog()
+frontPage.loadItemsList(apiProducts.items)
 console.log(
   `Массив из каталога ${JSON.stringify(frontPage.itemsList, null, 2)}`,
 )
@@ -37,7 +38,7 @@ console.log(
 console.log(
   `Before selected item ${JSON.stringify(frontPage.getSelectedItem())}`,
 )
-frontPage.setSelectedItem('854cef69-976d-4c2a-a18c-2aa45046c390')
+if (item) frontPage.setSelectedItem(item)
 console.log(`Selected Item ${JSON.stringify(frontPage.getSelectedItem())}`)
 export const apiProducts2 = {
   total: 10,
@@ -64,11 +65,9 @@ export const apiProducts2 = {
 frontPage.loadItemsList(apiProducts2.items)
 const itemsFront2 = frontPage.getItemList()
 console.log(`Main storage new ${JSON.stringify(itemsFront2)}`)
-frontPage.removeItem('c101ab44-ed99-4a54-990d-47aa2bb4e7d9')
-const itemsFront3 = frontPage.getItemList()
-console.log(`Main storage Removed item ${JSON.stringify(itemsFront3)}`)
 
-const frontPage2 = new FrontPage(apiProducts.items)
+const frontPage2 = new Catalog()
+frontPage2.loadItemsList(apiProducts.items)
 const basket = new Basket()
 const firstItem = frontPage2.getItem('412bcf81-7e75-4e70-bdb9-d3c73c9803b7')
 if (firstItem) {
@@ -125,7 +124,8 @@ serverAPI.getProductList().then((result) => {
   console.log(`Raw data for product list ${result}`)
   if (result && result.items) {
     try {
-      const front = new FrontPage(result.items)
+      const front = new Catalog()
+      front.loadItemsList(result.items)
       console.log(`Response for Product list ${JSON.stringify(front.itemsList)}`)
     } catch (parsingError) {
       console.error(`Has parsing error ${parsingError}`)
@@ -133,8 +133,8 @@ serverAPI.getProductList().then((result) => {
   } else {
     console.error('No valuable data');
   }
-}).catch((reason) => {
-  console.error(`Server failed ${reason}`)
+}).catch((error) => {
+  console.error(`Server failed ${error}`)
 })
 
 const basket2 = new Basket()

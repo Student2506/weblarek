@@ -2,7 +2,7 @@ import { IBuyer, IOrder, Payment } from '.'
 import { Basket } from '../components/models/basket'
 
 export class Order implements IOrder {
-  payment: string
+  payment: Payment | null
   email: string
   phone: string
   address: string
