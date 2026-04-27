@@ -252,3 +252,125 @@ class ServerAPI {
 ```  
 Класс является инструментарием для работы с сервером, работающим по REST API  
 При создании получает извне ссылку на IApi, использует её для получения данных с сервера.  
+
+### Слой презентации  
+#### Класс Header  
+```typescript
+class Header {
+
+}
+```
+
+комменты  
+Элементы
+  главная страница
+    загловок
+      иконка корзины
+    спсиок карточек товаров
+      карточка
+  модальное окно описание товара
+    карточка подробное описание
+  модальное окно корзина
+    список карточек
+      карточка краткое описание
+  модальное окно оплата (форма)
+    способ оплаты
+    адерс доставки
+  модальное окно пользователь (форма)
+    емайл и телефон
+  модальное окно завершение заказа
+  Модальное окно
+
+Повторно используемые
+  карточка
+  форма модального окна
+
+class Header {
+  basketButton: HTMLButtonElement
+  counter: HTMLElement
+
+  setCounter(value: number)
+}
+
+class Gallery {
+  catalogElement: HTMLElement
+
+  set catalog(items: HTMLElement[])
+}
+
+class Modal {
+  modalElement: HTMLElment
+  closeButton: HTMLButtonElement
+
+  set content(content: HTMLElement)
+}
+
+class ModalTemplate {
+
+}
+
+class SuccessTemplate extends ModalTemplate {
+}
+
+
+
+class Card {
+  content: HTMLElement
+
+  setContent(content: HTMLElement)
+}
+
+class CardCatalogTemplate extends Card {
+  buttonCard: HTMLButtonElement
+}
+
+class PreviewTemplat extends ModalTemplate {
+  card: CardPreviewTemplate
+
+  setCard(card: CardPrevieTeimplate)
+}
+
+class CardPreviewTemplate extends Card {
+  backetButton: HTMLButtonElement
+}
+
+
+class CardBasket extends Card {
+  deleteButton: HTMLButtonElement
+}
+
+class Basket extends ModalTemplate {
+  cardBasketList: List<HTMLElement>
+  submitButton: HTMLButtonElement
+
+  setCardBasketLIst(List<HTMLElement> cards)
+}
+
+class FormModalTemplate extends ModalTemplate {
+  buttonNext: HTMLButtonElemnt
+
+  submit()
+}
+
+class ContactsData extends FormModalTemplate {
+  inputEmail: HTMLInputElement
+  inputPhone: HTMLInputElement
+
+  setEmail(email: string)
+  setPHone(phone: string)
+}
+
+class OrderData extends FormModalTemplate {
+  buttonCardPayment: HTMLButtonElement
+  buttonCashPayment: HTMLButtonElement
+  inputAddress: HTMLInputElement
+
+  setCardPayment()
+  setCashPayment()
+  setAddress(addres: string)
+}
+
+### Презентер
+слова о том почему именно такая модель
+
+https://www.figma.com/design/92C0vV1ZCsVpgN9cH2DZ2d/Yandex--Веб-ларёк-?node-id=201-9445&p=f&t=XZ9Jl7yqgFHBm1Wp-0

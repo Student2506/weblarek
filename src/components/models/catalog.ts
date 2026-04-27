@@ -1,13 +1,15 @@
 import { IItem } from '../../types'
+import { EventEnum, IEvents } from '../base/Events'
 
 export class Catalog {
   private itemsList: IItem[] = []
   private currentItem: IItem | null = null
 
-  constructor() {}
+  constructor(private events: IEvents) {}
 
   setSelectedItem(item: IItem) {
     this.currentItem = item
+    this.events.emit(EventEnum.CatalogLoaded);
   }
   getSelectedItem(): IItem | undefined {
     if (this.currentItem) {
@@ -16,6 +18,7 @@ export class Catalog {
   }
   setItemsList(items: IItem[]) {
     this.itemsList = items
+    this.events.emit(EventEnum.CatalogLoaded);
   }
 
   getItemList(): IItem[] {
