@@ -147,7 +147,7 @@ console.log(`User with no data ${JSON.stringify(endUser2.getUserData())}`)
 export class Presenter {
   private headerView: Header
   private galleryView: Gallery
-  private basketPresenter: Basket
+  private basket: Basket
   private endUserPresenter: EndUser
 
   constructor() {
@@ -160,7 +160,7 @@ export class Presenter {
     const modal = ensureElement<HTMLDivElement>('#modal-container')
     const modalWindow = new ModalWindow(events, modal)
 
-    this.basketPresenter = new Basket()
+    this.basket = new Basket()
     this.endUserPresenter = new EndUser()
     this.headerView = new Header(events, header)
     this.galleryView = new Gallery(events, gallery)
@@ -197,33 +197,34 @@ export class Presenter {
       modal.classList.add('modal_active')
     })
     events.on(EventEnum.ProductBuy, (itemData) => {
-      this.basketPresenter.addItem(itemData as IItem)
+      this.basket.addItem(itemData as IItem)
       modal.classList.remove('modal_active')
       modalWindow.render({ content: undefined })
-      this.headerView.counter = this.basketPresenter.itemsCount()
+      this.headerView.counter = this.basket.itemsCount()
     })
     events.on(EventEnum.BasketOpen, () => {
-      let index = 1
       const basketTemplate = cloneTemplate('#basket')
       const basketForm = new BasketForm(events, basketTemplate, {
         onClick: () =>
           events.emit(
             EventEnum.OrderStart,
-            this.basketPresenter.getItemsList(),
+            this.basket.getItemsList(),
           ),
       })
       modalWindow.content = basketForm.render({
-        basket: this.basketPresenter.getItemsList().map((item) => {
+        basket: this.basket.getItemsList().map((item, index) => {
           const cardTemplate = cloneTemplate('#card-basket')
-          const cardBasket = new CardBasket(events, cardTemplate)
+          const cardBasket = new CardBasket(events, cardTemplate, {
+            onClick: () => events.emit(EventEnum.ProductRemove, {index: index})
+          })
           const htmlBacket = cardBasket.render({
-            index: String(index++),
+            index: String(index+1),
             title: item.title,
             price: String(item.price),
           })
           return htmlBacket
         }),
-        total: this.basketPresenter.itemsAmount(),
+        total: this.basket.itemsAmount(),
       })
       modalWindow.render()
       modal.classList.add('modal_active')
@@ -231,6 +232,38 @@ export class Presenter {
 
     events.on(EventEnum.OrderStart, (items) => {
       console.log('Start ordering', items)
+    })
+
+
+    events.on(EventEnum.ProductRemove, (item: {index: number}) => {
+      const currentList = this.basket.getItemsList()
+      console.log("Removing item ", currentList[item.index]);
+      this.basket.removeItem(currentList[item.index])
+      this.headerView.counter = this.basket.itemsCount()
+      const basketTemplate = cloneTemplate('#basket')
+      const basketForm = new BasketForm(events, basketTemplate, {
+        onClick: () =>
+          events.emit(
+            EventEnum.OrderStart,
+            this.basket.getItemsList(),
+          ),
+      })
+      modalWindow.content = ""
+      modalWindow.content = basketForm.render({
+        basket: this.basket.getItemsList().map((item, index) => {
+          const cardTemplate = cloneTemplate('#card-basket')
+          const cardBasket = new CardBasket(events, cardTemplate, {
+            onClick: () => events.emit(EventEnum.ProductRemove, {index: index})
+          })
+          const htmlBacket = cardBasket.render({
+            index: String(index+1),
+            title: item.title,
+            price: String(item.price),
+          })
+          return htmlBacket
+        }),
+        total: this.basket.itemsAmount(),
+      })
     })
 
     serverAPI
@@ -259,7 +292,7 @@ export class Presenter {
       modalWindow.render({ content: undefined })
     })
     events.on(EventEnum.BasketEmpty, () => {
-      this.basketPresenter.clearBasket()
+      this.basket.clearBasket()
     })
   }
 
