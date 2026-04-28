@@ -194,7 +194,6 @@ export class Presenter {
     serverAPI
       .getProductList()
       .then((result) => {
-        console.log(`Raw data for product list ${result}`)
         if (result && result.items) {
           try {
             catalog.setItemsList(result.items)

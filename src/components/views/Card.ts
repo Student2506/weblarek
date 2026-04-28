@@ -7,7 +7,7 @@ export interface ICard {
     image?: string
     price?: string
     index?: string
-    decription?: string
+    description?: string
 }
 
 export class Card<T> extends Component<T> {
