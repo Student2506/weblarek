@@ -12,6 +12,8 @@ export enum EventEnum {
   BasketOpen = "basket:open",
   ModalClose = "modal:close",
   CardOpen = "card:open",
+  BasketEmpty = "basket:empty",
+  OrderStart = "order:start",
 }
 
 export interface IEvents {

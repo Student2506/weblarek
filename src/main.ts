@@ -4,9 +4,14 @@ import { Basket } from './components/models/basket'
 import { Catalog } from './components/models/catalog'
 import { EndUser } from './components/models/enduser'
 import { ServerAPI } from './components/models/serverapi'
+import { BasketForm } from './components/views/BasketForm'
 import { Card } from './components/views/Card'
+import { CardBasket } from './components/views/CardBasket'
+import { CardCatalog } from './components/views/CardCatalog'
 import { Gallery } from './components/views/Gallery'
 import { Header } from './components/views/Header'
+import { ModalWindow } from './components/views/ModalWindow'
+import { SuccessForm } from './components/views/SuccsesForm'
 import './scss/styles.scss'
 import { API_URL, CDN_URL } from './utils/constants'
 import { cloneTemplate, ensureElement } from './utils/utils'
@@ -106,13 +111,13 @@ console.log(`Items amount ${itemsAmount}`)
 //   basket.removeItem(firstItem)
 //   console.log(`Basket items removal ${JSON.stringify(basket.getItemsList())}`)
 // }
-basket.clearBasket()
-console.log(`Clear basket ${basket.getItemsList()}`)
-if (basket.getItemsList().length === 0) {
-  console.log('Basket is empty')
-} else {
-  console.log(`Basket is not empty ${basket.getItemsList()}`)
-}
+// basket.clearBasket()
+// console.log(`Clear basket ${basket.getItemsList()}`)
+// if (basket.getItemsList().length === 0) {
+//   console.log('Basket is empty')
+// } else {
+//   console.log(`Basket is not empty ${basket.getItemsList()}`)
+// }
 
 const basket2 = new Basket()
 // const item1 = frontPage.getItem('854cef69-976d-4c2a-a18c-2aa45046c390')
@@ -140,9 +145,13 @@ endUser.saveUserData({ payment: 'cash' })
 export class Presenter {
   private headerView: Header
   private galleryView: Gallery
+  private basketPresenter: Basket
+  private endUserPresenter: EndUser
 
   constructor() {
     const events = new EventEmitter()
+    this.basketPresenter = new Basket()
+    this.endUserPresenter = new EndUser()
 
     const header = ensureElement<HTMLElement>('.header__container')
     this.headerView = new Header(events, header)
@@ -154,17 +163,34 @@ export class Presenter {
     events.on(EventEnum.CatalogLoaded, () => {
       this.galleryView.catalog = catalog.getItemList().map((item) => {
         const cardTemplate = cloneTemplate('#card-catalog')
-        return new Card(cardTemplate).render({
+        return new CardCatalog(cardTemplate).render({
           category: item.category,
-          name: item.title,
+          title: item.title,
           price: String(item.price),
           image: CDN_URL + item.image,
         })
       })
     });
     events.on(EventEnum.BasketOpen, () => {
-      console.log('Open Basket Robbins');
+      let index = 1;
+      const basket = cloneTemplate("#basket")
+      const basketForm = new BasketForm(events, basket)
+      modalWindow.content = basketForm.render({
+        basket: this.basketPresenter.getItemsList().map((item) => {
+          const cardTemplate = cloneTemplate("#card-basket")
+          
+          return new CardBasket(events, cardTemplate).render({
+            index: String(index++),
+            title: item.title,
+            price: String(item.price)
+          })
+        }),
+        total: this.basketPresenter.itemsAmount()
+      })
+      modalWindow.render()
+      modal.classList.add("modal_active")
     });
+
     serverAPI
       .getProductList()
       .then((result) => {
@@ -182,6 +208,21 @@ export class Presenter {
       .catch((error) => {
         console.error(`Server failed ${error}`)
       })
+    const modal = ensureElement<HTMLDivElement>('#modal-container')
+    const modalWindow = new ModalWindow(events, modal)
+    const success = cloneTemplate("#success");
+    const successForm = new SuccessForm(events, success)
+    modalWindow.content = successForm.render({finalAmount: 30})
+    modalWindow.render()
+    modal.classList.add("modal_active")
+    events.on(EventEnum.ModalClose, () => {
+      modal.classList.remove("modal_active")
+      modalWindow.render({content: undefined})
+    })
+    events.on(EventEnum.BasketEmpty, () => {
+      this.basketPresenter.clearBasket()
+    })
+    
   }
 
   init(): void {

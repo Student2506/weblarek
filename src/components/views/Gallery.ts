@@ -10,7 +10,7 @@ export class Gallery extends Component<IGallery> {
 
   constructor(
     protected events: IEvents,
-    container: HTMLElement,
+    protected container: HTMLElement,
   ) {
     super(container)
 
