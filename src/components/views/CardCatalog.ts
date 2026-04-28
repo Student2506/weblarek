@@ -5,7 +5,7 @@ interface ICardActions {
     onClick(): void
 }
 
-export type TCardCatalog = Pick<ICard, 'image' | 'category'>;
+export type TCardCatalog = Pick<ICard, 'image' | 'category' | 'title' | 'price'>;
 
 export class CardCatalog extends Card<TCardCatalog> {
     protected imageElement: HTMLImageElement

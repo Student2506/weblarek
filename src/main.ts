@@ -5,14 +5,16 @@ import { Catalog } from './components/models/catalog'
 import { EndUser } from './components/models/enduser'
 import { ServerAPI } from './components/models/serverapi'
 import { BasketForm } from './components/views/BasketForm'
-import { Card } from './components/views/Card'
 import { CardBasket } from './components/views/CardBasket'
 import { CardCatalog } from './components/views/CardCatalog'
+import { CardPreview } from './components/views/CardPreview'
 import { Gallery } from './components/views/Gallery'
 import { Header } from './components/views/Header'
 import { ModalWindow } from './components/views/ModalWindow'
+import { PreviewForm } from './components/views/PreviewForm'
 import { SuccessForm } from './components/views/SuccsesForm'
 import './scss/styles.scss'
+import { IItem } from './types'
 import { API_URL, CDN_URL } from './utils/constants'
 import { cloneTemplate, ensureElement } from './utils/utils'
 
@@ -57,35 +59,35 @@ console.log(`User with no data ${JSON.stringify(endUser2.getUserData())}`)
 // )
 // if (item) frontPage.setSelectedItem(item)
 // console.log(`Selected Item ${JSON.stringify(frontPage.getSelectedItem())}`)
-export const apiProducts2 = {
-  total: 10,
-  items: [
-    {
-      id: '854cef69-976d-4c2a-a18c-2aa45046c390',
-      description: 'Если планируете решать задачи в тренажёре, берите два.',
-      image: '/5_Dots.svg',
-      title: '+1 час в сутках',
-      category: 'софт-скил',
-      price: 750,
-    },
-    {
-      id: 'c101ab44-ed99-4a54-990d-47aa2bb4e7d9',
-      description:
-        'Лизните этот леденец, чтобы мгновенно запоминать и узнавать любой цветовой код CSS.',
-      image: '/Shell.svg',
-      title: 'HEX-леденец',
-      category: 'другое',
-      price: 1450,
-    },
-  ],
-}
+// export const apiProducts2 = {
+//   total: 10,
+//   items: [
+//     {
+//       id: '854cef69-976d-4c2a-a18c-2aa45046c390',
+//       description: 'Если планируете решать задачи в тренажёре, берите два.',
+//       image: '/5_Dots.svg',
+//       title: '+1 час в сутках',
+//       category: 'софт-скил',
+//       price: 750,
+//     },
+//     {
+//       id: 'c101ab44-ed99-4a54-990d-47aa2bb4e7d9',
+//       description:
+//         'Лизните этот леденец, чтобы мгновенно запоминать и узнавать любой цветовой код CSS.',
+//       image: '/Shell.svg',
+//       title: 'HEX-леденец',
+//       category: 'другое',
+//       price: 1450,
+//     },
+//   ],
+// }
 // frontPage.setItemsList(apiProducts2.items)
 // const itemsFront2 = frontPage.getItemList()
 // console.log(`Main storage new ${JSON.stringify(itemsFront2)}`)
 
 // const frontPage2 = new Catalog()
 // frontPage2.setItemsList(apiProducts.items)
-const basket = new Basket()
+// const basket = new Basket()
 // const firstItem = frontPage2.getItem('412bcf81-7e75-4e70-bdb9-d3c73c9803b7')
 // if (firstItem) {
 //   basket.addItem(firstItem)
@@ -96,12 +98,12 @@ const basket = new Basket()
 // if (secondItem) {
 //   basket.addItem(secondItem)
 // }
-const items = basket.getItemsList()
-console.log(`Basket ${JSON.stringify(items, null, 2)}`)
-const itemsCount = basket.itemsCount()
-console.log(`Items count ${itemsCount}`)
-const itemsAmount = basket.itemsAmount()
-console.log(`Items amount ${itemsAmount}`)
+// const items = basket.getItemsList()
+// console.log(`Basket ${JSON.stringify(items, null, 2)}`)
+// const itemsCount = basket.itemsCount()
+// console.log(`Items count ${itemsCount}`)
+// const itemsAmount = basket.itemsAmount()
+// console.log(`Items amount ${itemsAmount}`)
 
 // if (firstItem) {
 //   const isInBasket = basket.checkIfItemInList(firstItem.id)
@@ -119,7 +121,7 @@ console.log(`Items amount ${itemsAmount}`)
 //   console.log(`Basket is not empty ${basket.getItemsList()}`)
 // }
 
-const basket2 = new Basket()
+// const basket2 = new Basket()
 // const item1 = frontPage.getItem('854cef69-976d-4c2a-a18c-2aa45046c390')
 // if (item1) {
 //   basket2.addItem(item1)
@@ -128,7 +130,7 @@ const basket2 = new Basket()
 // if (item2) {
 //   basket2.addItem(item2)
 // }
-endUser.saveUserData({ payment: 'cash' })
+// endUser.saveUserData({ payment: 'cash' })
 // serverAPI
 //   .postOrder({
 //     ...endUser.getUserData(),
@@ -150,46 +152,86 @@ export class Presenter {
 
   constructor() {
     const events = new EventEmitter()
-    this.basketPresenter = new Basket()
-    this.endUserPresenter = new EndUser()
-
     const header = ensureElement<HTMLElement>('.header__container')
-    this.headerView = new Header(events, header)
     const gallery = ensureElement<HTMLElement>('.gallery')
-    this.galleryView = new Gallery(events, gallery)
     const catalog = new Catalog(events)
     const api = new Api(API_URL)
     const serverAPI = new ServerAPI(api)
+    const modal = ensureElement<HTMLDivElement>('#modal-container')
+    const modalWindow = new ModalWindow(events, modal)
+
+    this.basketPresenter = new Basket()
+    this.endUserPresenter = new EndUser()
+    this.headerView = new Header(events, header)
+    this.galleryView = new Gallery(events, gallery)
+    
     events.on(EventEnum.CatalogLoaded, () => {
       this.galleryView.catalog = catalog.getItemList().map((item) => {
         const cardTemplate = cloneTemplate('#card-catalog')
-        return new CardCatalog(cardTemplate).render({
+        return new CardCatalog(cardTemplate, {
+          onClick: () => events.emit(EventEnum.CardOpen, item),
+        }).render({
           category: item.category,
           title: item.title,
           price: String(item.price),
           image: CDN_URL + item.image,
         })
       })
-    });
+    })
+    events.on(EventEnum.CardOpen, (itemData) => {
+      const itemTemplate = cloneTemplate('#card-preview')
+      const cardPreview = new CardPreview(itemTemplate, events, {
+        onClick: () => events.emit(EventEnum.ProductBuy, itemData),
+      })
+      const itemForm = new PreviewForm(
+        cardPreview.render({
+          title: (itemData as IItem).title,
+          price: String((itemData as IItem).price),
+          category: (itemData as IItem).category,
+          image: CDN_URL + (itemData as IItem).image,
+          description: (itemData as IItem).description,
+        }),
+      )
+      modalWindow.content = itemForm.render()
+      modalWindow.render()
+      modal.classList.add('modal_active')
+    })
+    events.on(EventEnum.ProductBuy, (itemData) => {
+      this.basketPresenter.addItem(itemData as IItem)
+      modal.classList.remove('modal_active')
+      modalWindow.render({ content: undefined })
+      this.headerView.counter = this.basketPresenter.itemsCount()
+    })
     events.on(EventEnum.BasketOpen, () => {
-      let index = 1;
-      const basket = cloneTemplate("#basket")
-      const basketForm = new BasketForm(events, basket)
+      let index = 1
+      const basketTemplate = cloneTemplate('#basket')
+      const basketForm = new BasketForm(events, basketTemplate, {
+        onClick: () =>
+          events.emit(
+            EventEnum.OrderStart,
+            this.basketPresenter.getItemsList(),
+          ),
+      })
       modalWindow.content = basketForm.render({
         basket: this.basketPresenter.getItemsList().map((item) => {
-          const cardTemplate = cloneTemplate("#card-basket")
-          
-          return new CardBasket(events, cardTemplate).render({
+          const cardTemplate = cloneTemplate('#card-basket')
+          const cardBasket = new CardBasket(events, cardTemplate)
+          const htmlBacket = cardBasket.render({
             index: String(index++),
             title: item.title,
-            price: String(item.price)
+            price: String(item.price),
           })
+          return htmlBacket
         }),
-        total: this.basketPresenter.itemsAmount()
+        total: this.basketPresenter.itemsAmount(),
       })
       modalWindow.render()
-      modal.classList.add("modal_active")
-    });
+      modal.classList.add('modal_active')
+    })
+
+    events.on(EventEnum.OrderStart, (items) => {
+      console.log('Start ordering', items)
+    })
 
     serverAPI
       .getProductList()
@@ -207,21 +249,18 @@ export class Presenter {
       .catch((error) => {
         console.error(`Server failed ${error}`)
       })
-    const modal = ensureElement<HTMLDivElement>('#modal-container')
-    const modalWindow = new ModalWindow(events, modal)
-    const success = cloneTemplate("#success");
-    const successForm = new SuccessForm(events, success)
-    modalWindow.content = successForm.render({finalAmount: 30})
-    modalWindow.render()
-    modal.classList.add("modal_active")
+    // const success = cloneTemplate('#success')
+    // const successForm = new SuccessForm(events, success)
+    // modalWindow.content = successForm.render({ finalAmount: 30 })
+    // modalWindow.render()
+    // modal.classList.add('modal_active')
     events.on(EventEnum.ModalClose, () => {
-      modal.classList.remove("modal_active")
-      modalWindow.render({content: undefined})
+      modal.classList.remove('modal_active')
+      modalWindow.render({ content: undefined })
     })
     events.on(EventEnum.BasketEmpty, () => {
       this.basketPresenter.clearBasket()
     })
-    
   }
 
   init(): void {

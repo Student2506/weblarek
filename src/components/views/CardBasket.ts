@@ -1,11 +1,10 @@
 import { ensureElement } from "../../utils/utils";
-import { Component } from "../base/Component";
 import { IEvents } from "../base/Events";
-import { ICard } from "./Card";
+import { Card, ICard } from "./Card";
 
 export type TCardBasket = Pick<ICard, 'index' | 'title' | 'price'>
 
-export class CardBasket extends Component<TCardBasket> {
+export class CardBasket extends Card<TCardBasket> {
   protected deleteButtonElement: HTMLButtonElement
   protected indexElement: HTMLSpanElement
 
@@ -19,4 +18,5 @@ export class CardBasket extends Component<TCardBasket> {
   set index(value: number) {
     this.indexElement.textContent = String(value)
   }
+
 }

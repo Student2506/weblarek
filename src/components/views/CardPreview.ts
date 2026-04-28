@@ -45,4 +45,12 @@ export class CardPreview extends Card<TCardPreview> {
       this.addButtonElement.addEventListener('click', actions.onClick)
     }
   }
+
+  set category(value: string) {
+    this.categoryElement.textContent = value
+  }
+
+  set image(value: string) {
+    this.setImage(this.imageElement, value, `Image for ${this.title}`)
+  }
 }
