@@ -32,6 +32,7 @@ export class Card<T> extends Component<T> {
   }
 
   set price(value: string) {
-    this.priceElement.textContent = `${value} синапсов`
+    if (isNaN(parseFloat(value))) this.priceElement.textContent = 'Бесценно'
+    else this.priceElement.textContent = `${value} синапсов`
   }
 }

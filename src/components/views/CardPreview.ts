@@ -53,4 +53,12 @@ export class CardPreview extends Card<TCardPreview> {
   set image(value: string) {
     this.setImage(this.imageElement, value, `Image for ${this.title}`)
   }
+
+  set price(value: string) {
+    if (isNaN(parseFloat(value))) {
+      this.priceElement.textContent = 'Бесценно'
+      this.addButtonElement.textContent = 'Недоступно'
+      this.addButtonElement.disabled = true
+    } else this.priceElement.textContent = `${value} синапсов`
+  }
 }
