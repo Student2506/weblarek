@@ -2,17 +2,17 @@ import { ensureElement } from '../../utils/utils'
 import { Component } from '../base/Component'
 import { EventEnum, IEvents } from '../base/Events'
 
-interface IHeader {
+interface IViewHeader {
   counter: number
 }
 
-export class Header extends Component<IHeader> {
+export class ViewHeader extends Component<IViewHeader> {
   protected counterElement: HTMLElement
   protected basketButton: HTMLButtonElement
 
   constructor(
     protected events: IEvents,
-    container: HTMLElement,
+    protected container: HTMLElement,
   ) {
     super(container)
     this.counterElement = ensureElement<HTMLElement>(

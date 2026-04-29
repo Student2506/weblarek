@@ -12,8 +12,8 @@ import { ContactsForm } from './components/views/FormContacts'
 import { OrderForm } from './components/views/FormOrder'
 import { PreviewForm } from './components/views/FormPreview'
 import { SuccessForm } from './components/views/FormSuccses'
-import { Gallery } from './components/views/ViewGallery'
-import { Header } from './components/views/ViewHeader'
+import { ViewGallery } from './components/views/ViewGallery'
+import { ViewHeader } from './components/views/ViewHeader'
 import { ModalWindow } from './components/views/ViewModal'
 import './scss/styles.scss'
 import { IBuyer, IItem, ValidationErrors } from './types'
@@ -21,8 +21,8 @@ import { API_URL, CDN_URL } from './utils/constants'
 import { cloneTemplate, ensureElement } from './utils/utils'
 
 export class Presenter {
-  private headerView: Header
-  private galleryView: Gallery
+  private headerView: ViewHeader
+  private galleryView: ViewGallery
   private basket: Basket
   private endUser: EndUser
   private modal: HTMLDivElement
@@ -35,19 +35,23 @@ export class Presenter {
   private serverAPI: ServerAPI
 
   constructor() {
-    this.events = new EventEmitter()
     this.modal = ensureElement<HTMLDivElement>('#modal-container')
-    this.modalWindow = new ModalWindow(this.events, this.modal)
+    this.header = ensureElement<HTMLElement>('.header__container')
+    this.gallery = ensureElement<HTMLElement>('.gallery')
+
+    this.events = new EventEmitter()
     this.basket = new Basket()
     this.endUser = new EndUser()
-    this.header = ensureElement<HTMLElement>('.header__container')
-    this.headerView = new Header(this.events, this.header)
-    this.catalog = new Catalog(this.events)
-    this.gallery = ensureElement<HTMLElement>('.gallery')
-    this.galleryView = new Gallery(this.events, this.gallery)
+
+    this.headerView = new ViewHeader(this.events, this.header)
+    this.modalWindow = new ModalWindow(this.events, this.modal)
+    this.galleryView = new ViewGallery(this.events, this.gallery)
+
     this.api = new Api(API_URL)
     this.serverAPI = new ServerAPI(this.api)
+    this.catalog = new Catalog(this.events)
 
+    
     this.modal.addEventListener('click', () => this.modalClose)
 
     this.events.on(EventEnum.CatalogLoaded, () => {
@@ -95,6 +99,7 @@ export class Presenter {
           this.events.emit(EventEnum.OrderStart, this.basket.getItemsList())
         },
       })
+      basketForm.setButtonState(this.basket.itemsCount() === 0)
       this.modalOpen(
         basketForm.render({
           basket: this.basket.getItemsList().map((item, index) => {
@@ -212,10 +217,12 @@ export class Presenter {
       this.headerView.counter = this.basket.itemsCount()
       const basketTemplate = cloneTemplate('#basket')
       const basketForm = new BasketForm(this.events, basketTemplate, {
-        onClick: () =>
-          this.events.emit(EventEnum.OrderStart, this.basket.getItemsList()),
+        onClick: () => {
+          this.events.emit(EventEnum.OrderStart, this.basket.getItemsList())
+        },
       })
       this.modalClose()
+      basketForm.setButtonState(this.basket.itemsCount() === 0)
       this.modalOpen(
         basketForm.render({
           basket: this.basket.getItemsList().map((item, index) => {

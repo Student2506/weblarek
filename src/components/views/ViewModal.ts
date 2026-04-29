@@ -12,7 +12,7 @@ export class ModalWindow extends Component<IModalWindow> {
 
   constructor(
     protected events: IEvents,
-    container: HTMLElement,
+    protected container: HTMLElement,
   ) {
     super(container)
 

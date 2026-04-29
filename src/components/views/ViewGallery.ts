@@ -1,11 +1,11 @@
 import { Component } from '../base/Component'
 import { IEvents } from '../base/Events'
 
-interface IGallery {
+interface IViewGallery {
   catalog: HTMLElement[]
 }
 
-export class Gallery extends Component<IGallery> {
+export class ViewGallery extends Component<IViewGallery> {
   protected catalogElement: HTMLElement
 
   constructor(

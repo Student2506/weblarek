@@ -49,4 +49,8 @@ export class BasketForm extends Component<IBasketForm> {
   set total(value: string) {
     this.totalPriceElement.textContent = `${value} синапсов`
   }
+
+  setButtonState(isDisabled: boolean) {
+    this.sumbitButtonElement.disabled = isDisabled
+  }
 }
