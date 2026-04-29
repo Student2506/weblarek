@@ -17,7 +17,6 @@ export class ServerAPI {
       order,
       'POST',
     )
-    console.log(`Response from server ${JSON.stringify(response)}`)
     return response
   }
 }

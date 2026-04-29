@@ -12,9 +12,9 @@ import { ContactsForm } from './components/views/FormContacts'
 import { OrderForm } from './components/views/FormOrder'
 import { PreviewForm } from './components/views/FormPreview'
 import { SuccessForm } from './components/views/FormSuccses'
-import { Gallery } from './components/views/Gallery'
-import { Header } from './components/views/Header'
-import { ModalWindow } from './components/views/ModalWindow'
+import { Gallery } from './components/views/ViewGallery'
+import { Header } from './components/views/ViewHeader'
+import { ModalWindow } from './components/views/ViewModal'
 import './scss/styles.scss'
 import { IItem } from './types'
 import { API_URL, CDN_URL } from './utils/constants'
@@ -162,14 +162,24 @@ export class Presenter {
     events.on(EventEnum.OrderFinish, () => {
       const success = cloneTemplate('#success')
       const successForm = new SuccessForm(events, success)
-      modalWindow.content = successForm.render({
-        finalAmount: this.basket.itemsAmount(),
-      })
+      serverAPI
+        .postOrder({
+          ...this.endUserPresenter.getUserData(),
+          total: this.basket.itemsAmount(),
+          items: this.basket.getItemsList().map((item) => item.id),
+        })
+        .then((result) => {
+          modalWindow.content = successForm.render({
+            finalAmount: result.total,
+          })
+        })
+        .catch((error) => {
+          console.error(`Post Order error ${error}`)
+        })
     })
 
     events.on(EventEnum.ProductRemove, (item: { index: number }) => {
       const currentList = this.basket.getItemsList()
-      console.log('Removing item ', currentList[item.index])
       this.basket.removeItem(currentList[item.index])
       this.headerView.counter = this.basket.itemsCount()
       const basketTemplate = cloneTemplate('#basket')
