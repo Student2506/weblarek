@@ -121,21 +121,27 @@ export class Presenter {
           this.endUser.saveUserData({ payment: 'cash' })
           orderForm.chooseCash()
           const errors = this.validateInput(['payment', 'address'])
-          if (errors.length) orderForm.enableSubmit()
-          else orderForm.setError(errors)
+          if (!errors.length) {
+            orderForm.setError([])
+            orderForm.enableSubmit()
+          } else orderForm.setError(errors)
         },
         onCard: () => {
           this.endUser.saveUserData({ payment: 'card' })
           orderForm.chooseCard()
           const errors = this.validateInput(['payment', 'address'])
-          if (errors.length) orderForm.enableSubmit()
-          else orderForm.setError(errors)
+          if (!errors.length) {
+            orderForm.setError([])
+            orderForm.enableSubmit()
+          } else orderForm.setError(errors)
         },
         onEdit: (address: string) => {
           this.endUser.saveUserData({ address: address })
           const errors = this.validateInput(['payment', 'address'])
-          if (errors.length) orderForm.enableSubmit()
-          else orderForm.setError(errors)
+          if (!errors.length) {
+            orderForm.setError([])
+            orderForm.enableSubmit()
+          } else orderForm.setError(errors)
         },
       }
       const orderForm = new OrderForm(events, orderTemplate, actions)
@@ -157,8 +163,10 @@ export class Presenter {
             this.endUser.saveUserData({ phone: value })
           }
           const errors = this.validateInput(['phone', 'email'])
-          if (errors.length) contactsForm.enableSubmit()
-          else contactsForm.setError(errors)
+          if (!errors.length) {
+            contactsForm.setError([])
+            contactsForm.enableSubmit()
+          } else contactsForm.setError(errors)
         },
       }
       const contactsForm = new ContactsForm(events, contactsTemplate, actions)
@@ -175,7 +183,8 @@ export class Presenter {
           items: this.basket.getItemsList().map((item) => item.id),
         })
         .then((result) => {
-          console.log("Order success!")
+          console.log('Order success!')
+          this.headerView.counter = 0
           modalWindow.content = successForm.render({
             finalAmount: result.total,
           })

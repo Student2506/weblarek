@@ -60,6 +60,8 @@ export class ContactsForm extends Component<IContactsForm> {
   }
 
   setError(errors: string[]) {
-    this.errorsElement.textContent = errors.map(error => error.toString()).join("; ")
+    this.errorsElement.textContent = errors
+      .map((error) => error.toString())
+      .join('; ')
   }
 }

@@ -78,6 +78,8 @@ export class OrderForm extends Component<IOrderForm> {
   }
 
   setError(errors: string[]) {
-    this.errorsElement.textContent = errors.map(error => error.toString()).join("; ")
+    this.errorsElement.textContent = errors
+      .map((error) => error.toString())
+      .join('; ')
   }
 }

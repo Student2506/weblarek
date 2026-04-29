@@ -9,10 +9,10 @@ export class EndUser {
 
   checkUserData(): ValidationErrors {
     const errors: ValidationErrors = {}
-    if (this.address === '') errors['address'] = 'Address is absent'
-    if (!this.payment) errors['payment'] = 'Payment is absent'
-    if (this.email === '') errors['email'] = 'Email is manadatory'
-    if (this.phone === '') errors['phone'] = 'Phone is manadatory'
+    if (this.address === '') errors['address'] = 'Укажите адрес доставки'
+    if (!this.payment) errors['payment'] = 'Выберите тип платежа'
+    if (this.email === '') errors['email'] = 'Укажите e-mail'
+    if (this.phone === '') errors['phone'] = 'Укажите телефон'
     return errors
   }
   getUserData(): IBuyer {
