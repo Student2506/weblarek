@@ -2,7 +2,7 @@ import { ensureElement } from '../../utils/utils'
 import { Component } from '../base/Component'
 import { IEvents } from '../base/Events'
 
-interface IContactsForm {}
+interface IContactsForm {} // eslint-disable-line @typescript-eslint/no-empty-object-type
 
 interface IOrderActions {
   onEdit(fieldName: string, value: string): void
@@ -44,15 +44,17 @@ export class ContactsForm extends Component<IContactsForm> {
       this.formElement.addEventListener('submit', actions.onSubmit)
     }
     if (actions?.onEdit) {
-        this.emailElement.addEventListener('input', () => actions.onEdit('email', this.emailElement.value))
+      this.emailElement.addEventListener('input', () =>
+        actions.onEdit('email', this.emailElement.value),
+      )
     }
     if (actions?.onEdit) {
-        this.phoneElement.addEventListener('input', () => actions.onEdit('phone', this.phoneElement.value))
+      this.phoneElement.addEventListener('input', () =>
+        actions.onEdit('phone', this.phoneElement.value),
+      )
     }
-
   }
 
-  
   enableSubmit() {
     this.submitElement.disabled = false
   }

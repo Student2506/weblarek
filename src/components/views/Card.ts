@@ -1,13 +1,13 @@
-import { ensureElement } from "../../utils/utils";
-import { Component } from "../base/Component";
+import { ensureElement } from '../../utils/utils'
+import { Component } from '../base/Component'
 
 export interface ICard {
-    category?: string
-    title: string
-    image?: string
-    price?: string
-    index?: string
-    description?: string
+  category?: string
+  title: string
+  image?: string
+  price?: string
+  index?: string
+  description?: string
 }
 
 export class Card<T> extends Component<T> {
@@ -15,19 +15,23 @@ export class Card<T> extends Component<T> {
   protected priceElement: HTMLSpanElement
 
   constructor(protected container: HTMLElement) {
-    super(container);
+    super(container)
 
-    this.titleElement = ensureElement<HTMLHeadElement>(".card__title", this.container);
-    this.priceElement = ensureElement<HTMLSpanElement>(".card__price", this.container);
+    this.titleElement = ensureElement<HTMLHeadElement>(
+      '.card__title',
+      this.container,
+    )
+    this.priceElement = ensureElement<HTMLSpanElement>(
+      '.card__price',
+      this.container,
+    )
   }
-
 
   set title(value: string) {
-    this.titleElement.textContent = value;
-  }
-  
-  set price(value: string) {
-    this.priceElement.textContent = `${value} синапсов`;
+    this.titleElement.textContent = value
   }
 
+  set price(value: string) {
+    this.priceElement.textContent = `${value} синапсов`
+  }
 }

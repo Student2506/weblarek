@@ -8,16 +8,16 @@ type EmitterEvent = {
 }
 
 export enum EventEnum {
-  CatalogLoaded = "catalog:loaded",
-  BasketOpen = "basket:open",
-  ModalClose = "modal:close",
-  CardOpen = "card:open",
-  BasketEmpty = "basket:empty",
-  OrderStart = "order:start",
-  ProductBuy = "product:buy",
-  ProductRemove = "product:remove",
-  OrderContinue = "order:continue",
-  OrderFinish = "order:finish"
+  CatalogLoaded = 'catalog:loaded',
+  BasketOpen = 'basket:open',
+  ModalClose = 'modal:close',
+  CardOpen = 'card:open',
+  BasketEmpty = 'basket:empty',
+  OrderStart = 'order:start',
+  ProductBuy = 'product:buy',
+  ProductRemove = 'product:remove',
+  OrderContinue = 'order:continue',
+  OrderFinish = 'order:finish',
 }
 
 export interface IEvents {

@@ -9,7 +9,7 @@ export class Catalog {
 
   setSelectedItem(item: IItem) {
     this.currentItem = item
-    this.events.emit(EventEnum.CatalogLoaded);
+    this.events.emit(EventEnum.CatalogLoaded)
   }
   getSelectedItem(): IItem | undefined {
     if (this.currentItem) {
@@ -18,7 +18,7 @@ export class Catalog {
   }
   setItemsList(items: IItem[]) {
     this.itemsList = items
-    this.events.emit(EventEnum.CatalogLoaded);
+    this.events.emit(EventEnum.CatalogLoaded)
   }
 
   getItemList(): IItem[] {

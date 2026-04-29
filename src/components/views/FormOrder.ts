@@ -2,7 +2,7 @@ import { ensureElement } from '../../utils/utils'
 import { Component } from '../base/Component'
 import { IEvents } from '../base/Events'
 
-interface IOrderForm {}
+interface IOrderForm {} // eslint-disable-line @typescript-eslint/no-empty-object-type
 
 interface IOrderActions {
   onCash(): void

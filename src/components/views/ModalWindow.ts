@@ -16,20 +16,25 @@ export class ModalWindow extends Component<IModalWindow> {
   ) {
     super(container)
 
-    this.contentElement = ensureElement<HTMLDivElement>('.modal__content', this.container)
-    this.closeButton = ensureElement<HTMLButtonElement>('.modal__close', this.container)
+    this.contentElement = ensureElement<HTMLDivElement>(
+      '.modal__content',
+      this.container,
+    )
+    this.closeButton = ensureElement<HTMLButtonElement>(
+      '.modal__close',
+      this.container,
+    )
 
     this.closeButton.addEventListener('click', () => {
-        this.events.emit(EventEnum.ModalClose)
+      this.events.emit(EventEnum.ModalClose)
     })
   }
 
-  set content(item: HTMLElement | "") {
+  set content(item: HTMLElement | '') {
     if (item instanceof HTMLElement) {
-        this.contentElement.appendChild(item)
+      this.contentElement.appendChild(item)
     } else {
-        this.contentElement.innerHTML = ""
+      this.contentElement.innerHTML = ''
     }
-    
   }
 }
