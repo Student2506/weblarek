@@ -41,6 +41,11 @@ export class Presenter {
     this.headerView = new Header(events, header)
     this.galleryView = new Gallery(events, gallery)
 
+    modal.addEventListener("click", () => {
+      modal.classList.remove('modal_active')
+      modalWindow.content = ""
+    })
+
     events.on(EventEnum.CatalogLoaded, () => {
       this.galleryView.catalog = catalog.getItemList().map((item) => {
         const cardTemplate = cloneTemplate('#card-catalog')
