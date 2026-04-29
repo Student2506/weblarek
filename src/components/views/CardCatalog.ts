@@ -32,7 +32,7 @@ export class CardCatalog extends Card<TCardCatalog> {
   }
 
   set category(value: string) {
-    this.categoryElement.textContent = value
+    this.categoryElement.textContent = value;
   }
 
   set image(value: string) {
