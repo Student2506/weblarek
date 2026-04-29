@@ -7,11 +7,11 @@ import { ServerAPI } from './components/models/serverapi'
 import { CardBasket } from './components/views/CardBasket'
 import { CardCatalog } from './components/views/CardCatalog'
 import { CardPreview } from './components/views/CardPreview'
-import { BasketForm } from './components/views/FormBasket'
-import { ContactsForm } from './components/views/FormContacts'
-import { OrderForm } from './components/views/FormOrder'
-import { PreviewForm } from './components/views/FormPreview'
-import { SuccessForm } from './components/views/FormSuccses'
+import { FormBasket } from './components/views/FormBasket'
+import { FormContacts } from './components/views/FormContacts'
+import { FormOrder } from './components/views/FormOrder'
+import { FormPreview } from './components/views/FormPreview'
+import { FormSuccess } from './components/views/FormSuccses'
 import { ViewGallery } from './components/views/ViewGallery'
 import { ViewHeader } from './components/views/ViewHeader'
 import { ModalWindow } from './components/views/ViewModal'
@@ -75,7 +75,7 @@ export class Presenter {
           this.events.emit(EventEnum.ProductBuy, itemData)
         },
       })
-      const itemForm = new PreviewForm(
+      const itemForm = new FormPreview(
         cardPreview.render({
           title: (itemData as IItem).title,
           price: String((itemData as IItem).price),
@@ -93,7 +93,7 @@ export class Presenter {
     })
     this.events.on(EventEnum.BasketOpen, () => {
       const basketTemplate = cloneTemplate('#basket')
-      const basketForm = new BasketForm(this.events, basketTemplate, {
+      const basketForm = new FormBasket(this.events, basketTemplate, {
         onClick: () => {
           this.modalClose()
           this.events.emit(EventEnum.OrderStart, this.basket.getItemsList())
@@ -155,7 +155,7 @@ export class Presenter {
           } else orderForm.setError(errors)
         },
       }
-      const orderForm = new OrderForm(this.events, orderTemplate, actions)
+      const orderForm = new FormOrder(this.events, orderTemplate, actions)
       this.modalOpen(orderForm.render())
     })
     this.events.on(EventEnum.OrderContinue, () => {
@@ -180,7 +180,7 @@ export class Presenter {
           } else contactsForm.setError(errors)
         },
       }
-      const contactsForm = new ContactsForm(
+      const contactsForm = new FormContacts(
         this.events,
         contactsTemplate,
         actions,
@@ -190,7 +190,7 @@ export class Presenter {
 
     this.events.on(EventEnum.OrderFinish, () => {
       const success = cloneTemplate('#success')
-      const successForm = new SuccessForm(this.events, success)
+      const successForm = new FormSuccess(this.events, success)
       this.serverAPI
         .postOrder({
           ...this.endUser.getUserData(),
@@ -216,7 +216,7 @@ export class Presenter {
       this.basket.removeItem(currentList[item.index])
       this.headerView.counter = this.basket.itemsCount()
       const basketTemplate = cloneTemplate('#basket')
-      const basketForm = new BasketForm(this.events, basketTemplate, {
+      const basketForm = new FormBasket(this.events, basketTemplate, {
         onClick: () => {
           this.events.emit(EventEnum.OrderStart, this.basket.getItemsList())
         },

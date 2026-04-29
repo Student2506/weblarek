@@ -6,12 +6,12 @@ interface ICardActions {
   onClick(): void
 }
 
-interface IBasketForm {
+interface IFormBasket {
   basket: HTMLElement[]
   total: number
 }
 
-export class BasketForm extends Component<IBasketForm> {
+export class FormBasket extends Component<IFormBasket> {
   protected basketElement: HTMLDivElement
   protected sumbitButtonElement: HTMLButtonElement
   protected totalPriceElement: HTMLSpanElement

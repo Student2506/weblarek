@@ -1,10 +1,10 @@
 import { Component } from '../base/Component'
 
-interface IPreviewForm {
+interface IFormPreview {
   card: HTMLElement
 }
 
-export class PreviewForm extends Component<IPreviewForm> {
+export class FormPreview extends Component<IFormPreview> {
   constructor(protected container: HTMLElement) {
     super(container)
   }

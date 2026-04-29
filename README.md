@@ -258,7 +258,7 @@ class ServerAPI {
 Является классом представления, реализующим элемент заглоговка.
 
 Конструктор:  
-`constructor(protected events: IEvents, protected container: HTMLElement)` - принмает ссылку на диспетчер событий и корневой элемент разметки, за отображение которого он отвечает.  
+`constructor(events: IEvents, container: HTMLElement)` - принмает ссылку на диспетчер событий и корневой элемент разметки, за отображение которого он отвечает.  
 
 Поля класса:  
 `events: IEvents` - поле для хранения ссылки на диспетчер событий  
@@ -362,15 +362,100 @@ class ServerAPI {
 `set image(value: string)` - метод, отвечающий за установку изображения товара в карточке.  
 `set price(value: string` - метод для установки цены товара.  
 
+#### Класс FormBasket  
+Является классом представления, отвечающим за отображение корзины в модальном окне класса `ViewModal`.  
+
+Конструктор:  
+`constructor(events: IEvents, container: HTMLElement,  actions?: ICardActions)` - принмает ссылки на диспетчер событий, ссылку на DOM-элемент, представляющий из себя шаблон корзины, ссылку на опциональный набор действий, передаваемых из презентера.  
+
+Поля класса:  
+`events: IEvents` - поле, хранящее ссылку на диспетчер событий.  
+`container: HTMLElement` - поле, хранящее ссылку на DOM-элемент карточки.  
+`actions?: ICardActions` - опциональное поле, хранящее ссылку на объект, хранящий дествия переданные из презентера.  
+`basketElement: HTMLDivElement` - поле, являющееся ссылкой на DOM-элемент, представлющий из себя список карточек товаров.  
+`sumbitButtonElement: HTMLButtonElement` - поле, представлющее из себя ссылку на кнопку начала процедуры заказа.  
+`totalPriceElement: HTMLSpanElement` - поле, представляющее ис себя, ссылку на DOM-элемент, отвечающий за отображение общей стоимости заказа.  
+
+Методы класса:  
+`set basket(items: HTMLElement[])` - метод, отвечающий за установку в DOM-элемент списка корзины массива из карточек, товара к заказу.  
+`set total(value: string)` - метод, отвечающий за установку суммы заказа в DOM-элемент.  
+`setButtonState(isDisabled: boolean)` - метод, отвечающий за включение/отключение кнопки перехода на следующий этап.  
+
+#### Класс FormContacts  
+Является классом представления, отвечающим за отображение формы для заполнения в части электронной почты и телефона, отображается в модальном окне класса `ViewModal`.  
+
+Конструктор:  
+`constructor(events: IEvents, container: HTMLElement,  actions?: ICardActions)` - принмает ссылки на диспетчер событий, ссылку на DOM-элемент, представляющий из себя шаблон формы контактных данных, ссылку на опциональный набор действий, передаваемых из презентера.  
+
+Поля класса:  
+`events: IEvents` - поле, хранящее ссылку на диспетчер событий.  
+`container: HTMLElement` - поле, хранящее ссылку на DOM-элемент карточки.  
+`actions?: ICardActions` - опциональное поле, хранящее ссылку на объект, хранящий дествия переданные из презентера.  
+`emailElement: HTMLInputElement` - поле, отвечающее за ввод адерса электронной почты, для отправки заказа.   
+`phoneElement: HTMLInputElement` - поле, отвечающее за 
+ввод телефона заказчика.
+`submitElement: HTMLButtonElement` - поле, хранящее ссылку на DOM-элемент, представлющий из себя кнопку перехода на следующий шаг.  
+`formElement: HTMLFormElement` - поле, хранящее ссылку на DOM-элемент, представлющий из себя форму, обрамляющую вышеуказанные кнопки и поле.  
+`errorsElement: HTMLSpanElemen`t - поле, хранящее ссылку на DOM-элемент, представлющий из себя текстовое поле, информирующее об ошибках заполнения формы.  
+
+Методы класса:  
+`chooseCash()` - метод выбора оплаты наличными.  
+`chooseCard()` - метод выбора оплаты картой.  
+`enableSubmit()` - метод включения кнопки перехода на следующий шаг заказа.  
+`setError(errors: string[])` - метод вывода ошибок заполнения формы.  
+
+#### Класс FormOrder  
+Является классом представления, отвечающим за отображение формы для заполнения в части адерса и спосбоа оплаты, отображается в модальном окне класса `ViewModal`.  
+
+Конструктор:  
+`constructor(events: IEvents, container: HTMLElement,  actions?: ICardActions)` - принмает ссылки на диспетчер событий, ссылку на DOM-элемент, представляющий из себя шаблон формы оплаты, ссылку на опциональный набор действий, передаваемых из презентера.  
+
+Поля класса:  
+`events: IEvents` - поле, хранящее ссылку на диспетчер событий.  
+`container: HTMLElement` - поле, хранящее ссылку на DOM-элемент карточки.  
+`actions?: ICardActions` - опциональное поле, хранящее ссылку на объект, хранящий дествия переданные из презентера.  
+`onlinePayElement: HTMLButtonElement` - поле, хранящее ссылку на DOM-элемент, представляющий из себя кнопку выбора оплаты картой.  
+`cashPayElement: HTMLButtonElement` - поле, хранящее ссылку на DOM-элемент, представляющий из себя кнопку выбора оплаты наличными.  
+`addressElement: HTMLInputElement` - поле, хранящее ссылку на DOM-элемент, представлющий из сбея адрес доставки.  
+`submitElement: HTMLButtonElement` - поле, хранящее ссылку на DOM-элемент, представлющий из себя кнопку перехода на следующий шаг.  
+`formElement: HTMLFormElement` - поле, хранящее ссылку на DOM-элемент, представлющий из себя форму, обрамляющую вышеуказанные кнопки и поле.  
+`errorsElement: HTMLSpanElemen`t - поле, хранящее ссылку на DOM-элемент, представлющий из себя текстовое поле, информирующее об ошибках заполнения формы.  
+
+Методы класса:  
+`chooseCash()` - метод выбора оплаты наличными.  
+`chooseCard()` - метод выбора оплаты картой.  
+`enableSubmit()` - метод включения кнопки перехода на следующий шаг заказа.  
+`setError(errors: string[])` - метод вывода ошибок заполнения формы.  
+
+#### Класс FormPreview  
+Является классом представления, служит для отображения текущей выбранной карточки товара.  
+
+Конструктор:  
+`container: HTMLElement` - поле, хранящее ссылку на DOM-элемент карточки.  
+
+Поля Класса:
+`container: HTMLElement` - поле, хранящее ссылку на DOM-элемент карточки.  
+
+Методы класса:
+`set card(value: HTMLElement)` - метод установки содержимого карточки в форму.  
+
+#### Класс FormSuccess  
+Является классом представления, отвечающим за отображение формы для заполнения в части адерса и спосбоа оплаты, отображается в модальном окне класса `ViewModal`.  
+
+Конструктор:
+`constructor(events: IEvents, container: HTMLElement)` - принмает ссылки на диспетчер событий, ссылку на DOM-элемент, представляющий из себя шаблон формм подтвержения заказа.
+
+Поля класса:  
+`events: IEvents` - поле, хранящее ссылку на диспетчер событий.  
+`container: HTMLElement` - поле, хранящее ссылку на DOM-элемент формы потверждения заказа.  
+`descriptionElement: HTMLParagraphElement` - поле, хранящее ссылку на DOM-элемент, отображющий стоимость заказа после обработки.  
+`newPurchaseButton: HTMLButtonElement` - поле, хранящее ссылку на кнопку начала нового заказа.  
 
 
 комменты  
 Элементы
   модальное окно описание товара
-    карточка подробное описание
   модальное окно корзина
-    список карточек
-      карточка краткое описание
   модальное окно оплата (форма)
     способ оплаты
     адерс доставки
@@ -379,99 +464,7 @@ class ServerAPI {
   модальное окно завершение заказа
   Модальное окно
 
-Повторно используемые
-  карточка
-  форма модального окна
 
-class Header {
-  basketButton: HTMLButtonElement
-  counter: HTMLElement
-
-  setCounter(value: number)
-}
-
-class Gallery {
-  catalogElement: HTMLElement
-
-  set catalog(items: HTMLElement[])
-}
-
-class Modal {
-  modalElement: HTMLElment
-  closeButton: HTMLButtonElement
-
-  set content(content: HTMLElement)
-}
-
-class ModalTemplate {
-
-}
-
-class SuccessTemplate extends ModalTemplate {
-}
-
-
-
-class Card {
-  content: HTMLElement
-
-  setContent(content: HTMLElement)
-}
-
-class CardCatalogTemplate extends Card {
-  buttonCard: HTMLButtonElement
-}
-
-class PreviewTemplat extends ModalTemplate {
-  card: CardPreviewTemplate
-
-  setCard(card: CardPrevieTeimplate)
-}
-
-class CardPreviewTemplate extends Card {
-  backetButton: HTMLButtonElement
-}
-
-
-class CardBasket extends Card {
-  deleteButton: HTMLButtonElement
-}
-
-class Basket extends ModalTemplate {
-  cardBasketList: List<HTMLElement>
-  submitButton: HTMLButtonElement
-
-  setCardBasketLIst(List<HTMLElement> cards)
-}
-
-class FormModalTemplate extends ModalTemplate {
-  buttonNext: HTMLButtonElemnt
-
-  submit()
-}
-
-class ContactsData extends FormModalTemplate {
-  inputEmail: HTMLInputElement
-  inputPhone: HTMLInputElement
-
-  setEmail(email: string)
-  setPHone(phone: string)
-}
-
-class OrderData extends FormModalTemplate {
-  buttonCardPayment: HTMLButtonElement
-  buttonCashPayment: HTMLButtonElement
-  inputAddress: HTMLInputElement
-
-  setCardPayment()
-  setCashPayment()
-  setAddress(addres: string)
-}
-главная страница
-    загловок
-      иконка корзины
-    спсиок карточек товаров
-      карточка
   
 
 ### Презентер

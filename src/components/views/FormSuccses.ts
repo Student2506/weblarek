@@ -2,11 +2,11 @@ import { ensureElement } from '../../utils/utils'
 import { Component } from '../base/Component'
 import { EventEnum, IEvents } from '../base/Events'
 
-interface ISuccessForm {
+interface IFormSuccess {
   finalAmount: number
 }
 
-export class SuccessForm extends Component<ISuccessForm> {
+export class FormSuccess extends Component<IFormSuccess> {
   protected descriptionElement: HTMLParagraphElement
   protected newPurchaseButton: HTMLButtonElement
 

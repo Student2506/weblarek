@@ -2,14 +2,14 @@ import { ensureElement } from '../../utils/utils'
 import { Component } from '../base/Component'
 import { IEvents } from '../base/Events'
 
-interface IContactsForm {} // eslint-disable-line @typescript-eslint/no-empty-object-type
+interface IFormContacts {} // eslint-disable-line @typescript-eslint/no-empty-object-type
 
 interface IOrderActions {
   onEdit(fieldName: string, value: string): void
   onSubmit(event: SubmitEvent): void
 }
 
-export class ContactsForm extends Component<IContactsForm> {
+export class FormContacts extends Component<IFormContacts> {
   protected emailElement: HTMLInputElement
   protected phoneElement: HTMLInputElement
   protected submitElement: HTMLButtonElement

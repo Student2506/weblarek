@@ -2,7 +2,7 @@ import { ensureElement } from '../../utils/utils'
 import { Component } from '../base/Component'
 import { IEvents } from '../base/Events'
 
-interface IOrderForm {} // eslint-disable-line @typescript-eslint/no-empty-object-type
+interface IFormOrder {} // eslint-disable-line @typescript-eslint/no-empty-object-type
 
 interface IOrderActions {
   onCash(): void
@@ -11,7 +11,7 @@ interface IOrderActions {
   onSubmit(event: SubmitEvent): void
 }
 
-export class OrderForm extends Component<IOrderForm> {
+export class FormOrder extends Component<IFormOrder> {
   protected onlinePayElement: HTMLButtonElement
   protected cashPayElement: HTMLButtonElement
   protected addressElement: HTMLInputElement
