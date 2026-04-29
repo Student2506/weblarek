@@ -16,7 +16,7 @@ import { Gallery } from './components/views/ViewGallery'
 import { Header } from './components/views/ViewHeader'
 import { ModalWindow } from './components/views/ViewModal'
 import './scss/styles.scss'
-import { IItem } from './types'
+import { IBuyer, IItem, ValidationErrors } from './types'
 import { API_URL, CDN_URL } from './utils/constants'
 import { cloneTemplate, ensureElement } from './utils/utils'
 
@@ -24,7 +24,7 @@ export class Presenter {
   private headerView: Header
   private galleryView: Gallery
   private basket: Basket
-  private endUserPresenter: EndUser
+  private endUser: EndUser
 
   constructor() {
     const events = new EventEmitter()
@@ -37,7 +37,7 @@ export class Presenter {
     const modalWindow = new ModalWindow(events, modal)
 
     this.basket = new Basket()
-    this.endUserPresenter = new EndUser()
+    this.endUser = new EndUser()
     this.headerView = new Header(events, header)
     this.galleryView = new Gallery(events, gallery)
 
@@ -111,7 +111,6 @@ export class Presenter {
 
     events.on(EventEnum.OrderStart, () => {
       const orderTemplate = cloneTemplate('#order')
-      const fields = ['payment', 'address']
       const actions = {
         onSubmit: (event: SubmitEvent) => {
           event.preventDefault()
@@ -119,18 +118,24 @@ export class Presenter {
           events.emit(EventEnum.OrderContinue)
         },
         onCash: () => {
-          this.endUserPresenter.saveUserData({ payment: 'cash' })
+          this.endUser.saveUserData({ payment: 'cash' })
           orderForm.chooseCash()
-          if (this.validateInput(fields)) orderForm.enableSubmit()
+          const errors = this.validateInput(['payment', 'address'])
+          if (errors.length) orderForm.enableSubmit()
+          else orderForm.setError(errors)
         },
         onCard: () => {
-          this.endUserPresenter.saveUserData({ payment: 'card' })
+          this.endUser.saveUserData({ payment: 'card' })
           orderForm.chooseCard()
-          if (this.validateInput(fields)) orderForm.enableSubmit()
+          const errors = this.validateInput(['payment', 'address'])
+          if (errors.length) orderForm.enableSubmit()
+          else orderForm.setError(errors)
         },
         onEdit: (address: string) => {
-          this.endUserPresenter.saveUserData({ address: address })
-          if (this.validateInput(fields)) orderForm.enableSubmit()
+          this.endUser.saveUserData({ address: address })
+          const errors = this.validateInput(['payment', 'address'])
+          if (errors.length) orderForm.enableSubmit()
+          else orderForm.setError(errors)
         },
       }
       const orderForm = new OrderForm(events, orderTemplate, actions)
@@ -138,7 +143,6 @@ export class Presenter {
     })
     events.on(EventEnum.OrderContinue, () => {
       const contactsTemplate = cloneTemplate('#contacts')
-      const fields = ['email', 'phone']
       const actions = {
         onSubmit: (event: SubmitEvent) => {
           event.preventDefault()
@@ -147,12 +151,14 @@ export class Presenter {
         },
         onEdit: (fieldName: string, value: string) => {
           if (fieldName === 'email') {
-            this.endUserPresenter.saveUserData({ email: value })
+            this.endUser.saveUserData({ email: value })
           }
           if (fieldName === 'phone') {
-            this.endUserPresenter.saveUserData({ phone: value })
+            this.endUser.saveUserData({ phone: value })
           }
-          if (this.validateInput(fields)) contactsForm.enableSubmit()
+          const errors = this.validateInput(['phone', 'email'])
+          if (errors.length) contactsForm.enableSubmit()
+          else contactsForm.setError(errors)
         },
       }
       const contactsForm = new ContactsForm(events, contactsTemplate, actions)
@@ -164,11 +170,12 @@ export class Presenter {
       const successForm = new SuccessForm(events, success)
       serverAPI
         .postOrder({
-          ...this.endUserPresenter.getUserData(),
+          ...this.endUser.getUserData(),
           total: this.basket.itemsAmount(),
           items: this.basket.getItemsList().map((item) => item.id),
         })
         .then((result) => {
+          console.log("Order success!")
           modalWindow.content = successForm.render({
             finalAmount: result.total,
           })
@@ -236,12 +243,12 @@ export class Presenter {
     this.galleryView.render()
   }
 
-  private validateInput(fields: string[]) {
-    const error = this.endUserPresenter.checkUserData()
-    const isError = fields.some((field) => field in error)
-
-    if (isError) return false
-    return true
+  private validateInput(fields: Array<keyof IBuyer>) {
+    const errors: ValidationErrors = this.endUser.checkUserData()
+    const targetErrors: Array<keyof IBuyer> = fields
+    return targetErrors
+      .map((field) => errors[field])
+      .filter((value): value is string => typeof value === 'string')
   }
 }
 

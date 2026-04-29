@@ -76,4 +76,8 @@ export class OrderForm extends Component<IOrderForm> {
   enableSubmit() {
     this.submitElement.disabled = false
   }
+
+  setError(errors: string[]) {
+    this.errorsElement.textContent = errors.map(error => error.toString()).join("; ")
+  }
 }

@@ -58,4 +58,8 @@ export class ContactsForm extends Component<IContactsForm> {
   enableSubmit() {
     this.submitElement.disabled = false
   }
+
+  setError(errors: string[]) {
+    this.errorsElement.textContent = errors.map(error => error.toString()).join("; ")
+  }
 }
