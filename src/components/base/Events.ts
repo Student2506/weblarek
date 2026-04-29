@@ -15,7 +15,9 @@ export enum EventEnum {
   BasketEmpty = "basket:empty",
   OrderStart = "order:start",
   ProductBuy = "product:buy",
-  ProductRemove = "product:remove"
+  ProductRemove = "product:remove",
+  OrderContinue = "order:continue",
+  OrderFinish = "order:finish"
 }
 
 export interface IEvents {

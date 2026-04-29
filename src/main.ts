@@ -8,9 +8,11 @@ import { BasketForm } from './components/views/BasketForm'
 import { CardBasket } from './components/views/CardBasket'
 import { CardCatalog } from './components/views/CardCatalog'
 import { CardPreview } from './components/views/CardPreview'
+import { ContactsForm } from './components/views/ContactsForm'
 import { Gallery } from './components/views/Gallery'
 import { Header } from './components/views/Header'
 import { ModalWindow } from './components/views/ModalWindow'
+import { OrderForm } from './components/views/OrderForm'
 import { PreviewForm } from './components/views/PreviewForm'
 import { SuccessForm } from './components/views/SuccsesForm'
 import './scss/styles.scss'
@@ -18,30 +20,30 @@ import { IItem } from './types'
 import { API_URL, CDN_URL } from './utils/constants'
 import { cloneTemplate, ensureElement } from './utils/utils'
 
-const endUser = new EndUser()
-endUser.saveUserData({
-  address: 'Spb Vosstania 1',
-  payment: 'card',
-  email: 'test@test.ru',
-  phone: '+71234567890',
-})
-console.log(`User ${JSON.stringify(endUser.getUserData(), null, 2)}`)
-endUser.saveUserData({ address: 'Ekt Vosstania 2', phone: '+78437654321' })
-console.log(`Change user ${JSON.stringify(endUser.getUserData(), null, 2)}`)
-endUser.clearUserData()
-console.log(`Clear user ${JSON.stringify(endUser.getUserData(), null, 2)}`)
-endUser.saveUserData({
-  address: 'Spb Vosstania 1',
-  payment: 'card',
-  email: 'test@test.ru',
-  phone: '+71234567890',
-})
-const endUser2 = new EndUser()
-endUser2.saveUserData({ address: 'test@test.ru' })
-const checkUser = endUser2.checkUserData()
-console.log(`Check user ${JSON.stringify(checkUser)}`)
-endUser2.saveUserData({ address: '' })
-console.log(`User with no data ${JSON.stringify(endUser2.getUserData())}`)
+// const endUser = new EndUser()
+// endUser.saveUserData({
+//   address: 'Spb Vosstania 1',
+//   payment: 'card',
+//   email: 'test@test.ru',
+//   phone: '+71234567890',
+// })
+// console.log(`User ${JSON.stringify(endUser.getUserData(), null, 2)}`)
+// endUser.saveUserData({ address: 'Ekt Vosstania 2', phone: '+78437654321' })
+// console.log(`Change user ${JSON.stringify(endUser.getUserData(), null, 2)}`)
+// endUser.clearUserData()
+// console.log(`Clear user ${JSON.stringify(endUser.getUserData(), null, 2)}`)
+// endUser.saveUserData({
+//   address: 'Spb Vosstania 1',
+//   payment: 'card',
+//   email: 'test@test.ru',
+//   phone: '+71234567890',
+// })
+// const endUser2 = new EndUser()
+// endUser2.saveUserData({ address: 'test@test.ru' })
+// const checkUser = endUser2.checkUserData()
+// console.log(`Check user ${JSON.stringify(checkUser)}`)
+// endUser2.saveUserData({ address: '' })
+// console.log(`User with no data ${JSON.stringify(endUser2.getUserData())}`)
 
 // const frontPage = new Catalog()
 // frontPage.setItemsList(apiProducts.items)
@@ -164,7 +166,7 @@ export class Presenter {
     this.endUserPresenter = new EndUser()
     this.headerView = new Header(events, header)
     this.galleryView = new Gallery(events, gallery)
-    
+
     events.on(EventEnum.CatalogLoaded, () => {
       this.galleryView.catalog = catalog.getItemList().map((item) => {
         const cardTemplate = cloneTemplate('#card-catalog')
@@ -181,7 +183,10 @@ export class Presenter {
     events.on(EventEnum.CardOpen, (itemData) => {
       const itemTemplate = cloneTemplate('#card-preview')
       const cardPreview = new CardPreview(itemTemplate, events, {
-        onClick: () => events.emit(EventEnum.ProductBuy, itemData),
+        onClick: () => {
+          modalWindow.content = ''
+          events.emit(EventEnum.ProductBuy, itemData)
+        },
       })
       const itemForm = new PreviewForm(
         cardPreview.render({
@@ -205,20 +210,20 @@ export class Presenter {
     events.on(EventEnum.BasketOpen, () => {
       const basketTemplate = cloneTemplate('#basket')
       const basketForm = new BasketForm(events, basketTemplate, {
-        onClick: () =>
-          events.emit(
-            EventEnum.OrderStart,
-            this.basket.getItemsList(),
-          ),
+        onClick: () => {
+          modalWindow.content = ''
+          events.emit(EventEnum.OrderStart, this.basket.getItemsList())
+        },
       })
       modalWindow.content = basketForm.render({
         basket: this.basket.getItemsList().map((item, index) => {
           const cardTemplate = cloneTemplate('#card-basket')
           const cardBasket = new CardBasket(events, cardTemplate, {
-            onClick: () => events.emit(EventEnum.ProductRemove, {index: index})
+            onClick: () =>
+              events.emit(EventEnum.ProductRemove, { index: index }),
           })
           const htmlBacket = cardBasket.render({
-            index: String(index+1),
+            index: String(index + 1),
             title: item.title,
             price: String(item.price),
           })
@@ -230,33 +235,84 @@ export class Presenter {
       modal.classList.add('modal_active')
     })
 
-    events.on(EventEnum.OrderStart, (items) => {
-      console.log('Start ordering', items)
+    events.on(EventEnum.OrderStart, () => {
+      const orderTemplate = cloneTemplate('#order')
+      const fields = ['payment', 'address']
+      const actions = {
+        onSubmit: (event: SubmitEvent) => {
+          event.preventDefault()
+          modalWindow.content = ''
+          events.emit(EventEnum.OrderContinue)
+        },
+        onCash: () => {
+          this.endUserPresenter.saveUserData({ payment: 'cash' })
+          orderForm.chooseCash()
+          if (this.validateInput(fields)) orderForm.enableSubmit()
+        },
+        onCard: () => {
+          this.endUserPresenter.saveUserData({ payment: 'card' })
+          orderForm.chooseCard()
+          if (this.validateInput(fields)) orderForm.enableSubmit()
+        },
+        onEdit: (address: string) => {
+          this.endUserPresenter.saveUserData({ address: address })
+          if (this.validateInput(fields)) orderForm.enableSubmit()
+        },
+      }
+      const orderForm = new OrderForm(events, orderTemplate, actions)
+      modalWindow.content = orderForm.render()
+    })
+    events.on(EventEnum.OrderContinue, () => {
+      const contactsTemplate = cloneTemplate('#contacts')
+      const fields = ['email', 'phone']
+      const actions = {
+        onSubmit: (event: SubmitEvent) => {
+          event.preventDefault()
+          modalWindow.content = ''
+          events.emit(EventEnum.OrderFinish)
+        },
+        onEdit: (fieldName: string, value: string) => {
+          if (fieldName === 'email') {
+            this.endUserPresenter.saveUserData({ email: value })
+          }
+          if (fieldName === 'phone') {
+            this.endUserPresenter.saveUserData({ phone: value })
+          }
+          if (this.validateInput(fields)) contactsForm.enableSubmit()
+        },
+      }
+      const contactsForm = new ContactsForm(events, contactsTemplate, actions)
+      modalWindow.content = contactsForm.render()
     })
 
+    events.on(EventEnum.OrderFinish, () => {
+      const success = cloneTemplate('#success')
+      const successForm = new SuccessForm(events, success)
+      modalWindow.content = successForm.render({
+        finalAmount: this.basket.itemsAmount(),
+      })
+    })
 
-    events.on(EventEnum.ProductRemove, (item: {index: number}) => {
+    events.on(EventEnum.ProductRemove, (item: { index: number }) => {
       const currentList = this.basket.getItemsList()
-      console.log("Removing item ", currentList[item.index]);
+      console.log('Removing item ', currentList[item.index])
       this.basket.removeItem(currentList[item.index])
       this.headerView.counter = this.basket.itemsCount()
       const basketTemplate = cloneTemplate('#basket')
       const basketForm = new BasketForm(events, basketTemplate, {
         onClick: () =>
-          events.emit(
-            EventEnum.OrderStart,
-            this.basket.getItemsList(),
-          ),
+          events.emit(EventEnum.OrderStart, this.basket.getItemsList()),
       })
-      modalWindow.content = ""
+      modalWindow.content = ''
       modalWindow.content = basketForm.render({
         basket: this.basket.getItemsList().map((item, index) => {
           const cardTemplate = cloneTemplate('#card-basket')
           const cardBasket = new CardBasket(events, cardTemplate, {
-            onClick: () => events.emit(EventEnum.ProductRemove, {index: index})
+            onClick: () =>
+              events.emit(EventEnum.ProductRemove, { index: index }),
           })
           const htmlBacket = cardBasket.render({
-            index: String(index+1),
+            index: String(index + 1),
             title: item.title,
             price: String(item.price),
           })
@@ -282,11 +338,6 @@ export class Presenter {
       .catch((error) => {
         console.error(`Server failed ${error}`)
       })
-    // const success = cloneTemplate('#success')
-    // const successForm = new SuccessForm(events, success)
-    // modalWindow.content = successForm.render({ finalAmount: 30 })
-    // modalWindow.render()
-    // modal.classList.add('modal_active')
     events.on(EventEnum.ModalClose, () => {
       modal.classList.remove('modal_active')
       modalWindow.render({ content: undefined })
@@ -299,6 +350,14 @@ export class Presenter {
   init(): void {
     this.headerView.render()
     this.galleryView.render()
+  }
+
+  private validateInput(fields: string[]) {
+    const error = this.endUserPresenter.checkUserData()
+    const isError = fields.some((field) => field in error)
+
+    if (isError) return false
+    return true
   }
 }
 
