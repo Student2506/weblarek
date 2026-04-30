@@ -62,7 +62,7 @@ export class Presenter {
         }).render({
           category: item.category,
           title: item.title,
-          price: String(item.price),
+          price: item.price,
           image: CDN_URL + item.image,
         })
       })
@@ -75,13 +75,14 @@ export class Presenter {
           this.events.emit(EventEnum.ProductBuy, itemData)
         },
       })
+      const item = itemData as IItem
       const itemForm = new FormPreview(
         cardPreview.render({
-          title: (itemData as IItem).title,
-          price: String((itemData as IItem).price),
-          category: (itemData as IItem).category,
-          image: CDN_URL + (itemData as IItem).image,
-          description: (itemData as IItem).description,
+          title: item.title,
+          price: item.price,
+          category: item.category,
+          image: CDN_URL + item.image,
+          description: item.description,
         }),
       )
       this.modalOpen(itemForm.render())
@@ -111,7 +112,7 @@ export class Presenter {
             const htmlBacket = cardBasket.render({
               index: String(index + 1),
               title: item.title,
-              price: String(item.price),
+              price: item.price,
             })
             return htmlBacket
           }),
@@ -234,7 +235,7 @@ export class Presenter {
             const htmlBacket = cardBasket.render({
               index: String(index + 1),
               title: item.title,
-              price: String(item.price),
+              price: item.price,
             })
             return htmlBacket
           }),

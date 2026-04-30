@@ -5,7 +5,7 @@ export interface ICard {
   category?: string
   title: string
   image?: string
-  price?: string
+  price: number | null
   index?: string
   description?: string
 }
@@ -31,8 +31,8 @@ export class Card<T> extends Component<T> {
     this.titleElement.textContent = value
   }
 
-  set price(value: string) {
-    if (isNaN(parseFloat(value))) this.priceElement.textContent = 'Бесценно'
-    else this.priceElement.textContent = `${value} синапсов`
+  set price(value: number | null) {
+    if (value) this.priceElement.textContent = `${value} синапсов`
+    else this.priceElement.textContent = 'Бесценно'
   }
 }
