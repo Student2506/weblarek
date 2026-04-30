@@ -59,7 +59,14 @@ export class FormOrder extends Component<IFormOrder> {
       })
     }
     if (actions?.onSubmit) {
-      this.formElement.addEventListener('submit', actions.onSubmit)
+      this.formElement.addEventListener('submit', (event) => {
+        actions.onSubmit(event)
+        this.onlinePayElement.classList.remove('button_alt-active')
+        this.cashPayElement.classList.remove('button_alt-active')
+        this.submitElement.disabled = true
+        this.errorsElement.textContent = ''
+        this.addressElement.value = ''
+      })
     }
   }
 

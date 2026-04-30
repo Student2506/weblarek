@@ -12,7 +12,7 @@ export enum EventEnum {
   BasketOpen = 'basket:open',
   ModalClose = 'modal:close',
   SaveProduct = 'product:save',
-  BasketEmpty = 'basket:empty',
+  BasketChange = 'basket:change',
   OrderStart = 'order:start',
   ProductBuy = 'product:buy',
   ProductRemove = 'product:remove',

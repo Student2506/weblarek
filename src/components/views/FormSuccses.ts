@@ -26,7 +26,6 @@ export class FormSuccess extends Component<IFormSuccess> {
     )
 
     this.newPurchaseButton.addEventListener('click', () => {
-      this.events.emit(EventEnum.BasketEmpty)
       this.events.emit(EventEnum.ModalClose)
     })
   }

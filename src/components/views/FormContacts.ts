@@ -41,7 +41,13 @@ export class FormContacts extends Component<IFormContacts> {
     this.formElement = this.container as HTMLFormElement
 
     if (actions?.onSubmit) {
-      this.formElement.addEventListener('submit', actions.onSubmit)
+      this.formElement.addEventListener('submit', (event) => {
+        actions.onSubmit(event)
+        this.emailElement.value = ''
+        this.phoneElement.value = ''
+        this.submitElement.disabled = true
+        this.errorsElement.textContent = ''
+      })
     }
     if (actions?.onEdit) {
       this.emailElement.addEventListener('input', () =>
