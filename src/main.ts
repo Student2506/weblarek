@@ -47,7 +47,7 @@ export class Presenter {
     this.serverAPI = new ServerAPI(this.api)
     this.catalog = new Catalog(this.events)
 
-    this.modal.addEventListener('click', () => this.modalClose)
+    // this.modal.addEventListener('click', () => this.modalClose)
 
     this.events.on(EventEnum.CatalogLoaded, () => {
       this.galleryView.catalog = this.catalog.getItemList().map((item) => {
@@ -66,7 +66,7 @@ export class Presenter {
       const itemTemplate = cloneTemplate('#card-preview')
       const cardPreview = new CardPreview(itemTemplate, this.events, {
         onClick: () => {
-          this.modalClose()
+          this.modalWindow.content = ''
           this.events.emit(EventEnum.ProductBuy, itemData)
         },
       })
@@ -80,24 +80,23 @@ export class Presenter {
           description: item.description,
         }),
       )
-      this.modalOpen(itemForm.render())
+      this.modalWindow.render({content: itemForm.render()})
     })
     this.events.on(EventEnum.ProductBuy, (itemData) => {
       this.basket.addItem(itemData as IItem)
-      this.modalClose()
+      this.modalWindow.content = ''
       this.headerView.counter = this.basket.itemsCount()
     })
     this.events.on(EventEnum.BasketOpen, () => {
       const basketTemplate = cloneTemplate('#basket')
       const basketForm = new FormBasket(this.events, basketTemplate, {
         onClick: () => {
-          this.modalClose()
+          this.modalWindow.content = ''
           this.events.emit(EventEnum.OrderStart, this.basket.getItemsList())
         },
       })
       basketForm.setButtonState(this.basket.itemsCount() === 0)
-      this.modalOpen(
-        basketForm.render({
+      this.modalWindow.render({content: basketForm.render({
           basket: this.basket.getItemsList().map((item, index) => {
             const cardTemplate = cloneTemplate('#card-basket')
             const cardBasket = new CardBasket(this.events, cardTemplate, {
@@ -112,7 +111,7 @@ export class Presenter {
             return htmlBacket
           }),
           total: this.basket.itemsAmount(),
-        }),
+        })},
       )
     })
 
@@ -121,7 +120,7 @@ export class Presenter {
       const actions = {
         onSubmit: (event: SubmitEvent) => {
           event.preventDefault()
-          this.modalClose()
+          this.modalWindow.content = ''
           this.events.emit(EventEnum.OrderContinue)
         },
         onCash: () => {
@@ -152,14 +151,14 @@ export class Presenter {
         },
       }
       const orderForm = new FormOrder(this.events, orderTemplate, actions)
-      this.modalOpen(orderForm.render())
+      this.modalWindow.render({content: orderForm.render()})
     })
     this.events.on(EventEnum.OrderContinue, () => {
       const contactsTemplate = cloneTemplate('#contacts')
       const actions = {
         onSubmit: (event: SubmitEvent) => {
           event.preventDefault()
-          this.modalClose()
+          this.modalWindow.content = ''
           this.events.emit(EventEnum.OrderFinish)
         },
         onEdit: (fieldName: string, value: string) => {
@@ -181,7 +180,7 @@ export class Presenter {
         contactsTemplate,
         actions,
       )
-      this.modalOpen(contactsForm.render())
+      this.modalWindow.render({content: contactsForm.render()})
     })
 
     this.events.on(EventEnum.OrderFinish, () => {
@@ -196,10 +195,9 @@ export class Presenter {
         .then((result) => {
           console.log('Order success!')
           this.headerView.counter = 0
-          this.modalOpen(
-            successForm.render({
+          this.modalWindow.render({content: successForm.render({
               finalAmount: result.total,
-            }),
+            }),}
           )
         })
         .catch((error) => {
@@ -217,9 +215,9 @@ export class Presenter {
           this.events.emit(EventEnum.OrderStart, this.basket.getItemsList())
         },
       })
-      this.modalClose()
+      this.modalWindow.content = ''
       basketForm.setButtonState(this.basket.itemsCount() === 0)
-      this.modalOpen(
+      this.modalWindow.render({content:
         basketForm.render({
           basket: this.basket.getItemsList().map((item, index) => {
             const cardTemplate = cloneTemplate('#card-basket')
@@ -236,7 +234,7 @@ export class Presenter {
           }),
           total: this.basket.itemsAmount(),
         }),
-      )
+      })
     })
 
     this.serverAPI
@@ -251,7 +249,7 @@ export class Presenter {
       .catch((error) => {
         console.error(`Server failed ${error}`)
       })
-    this.events.on(EventEnum.ModalClose, () => this.modalClose())
+    this.events.on(EventEnum.ModalClose, () => this.modalWindow.content = '')
     this.events.on(EventEnum.BasketEmpty, () => this.basket.clearBasket())
   }
 
@@ -266,18 +264,6 @@ export class Presenter {
     return targetErrors
       .map((field) => errors[field])
       .filter((value): value is string => typeof value === 'string')
-  }
-
-  private modalClose() {
-    this.modal.classList.remove('modal_active')
-    this.modalWindow = new ModalWindow(this.events, this.modal)
-    this.modalWindow.content = ''
-  }
-
-  private modalOpen(window: HTMLElement) {
-    this.modalWindow.content = window
-    this.modalWindow.render()
-    this.modal.classList.add('modal_active')
   }
 }
 

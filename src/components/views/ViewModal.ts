@@ -33,8 +33,10 @@ export class ModalWindow extends Component<IModalWindow> {
   set content(item: HTMLElement | '') {
     if (item instanceof HTMLElement) {
       this.contentElement.appendChild(item)
+      this.container.classList.add('modal_active')
     } else {
       this.contentElement.innerHTML = ''
+      this.container.classList.remove('modal_active')
     }
   }
 }
