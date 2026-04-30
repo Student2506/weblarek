@@ -25,27 +25,23 @@ export class Presenter {
   private galleryView: ViewGallery
   private basket: Basket
   private endUser: EndUser
-  private modal: HTMLDivElement
   private modalWindow: ModalWindow
   private events: EventEmitter
-  private header: HTMLElement
   private catalog: Catalog
-  private gallery: HTMLElement
   private api: Api
   private serverAPI: ServerAPI
 
   constructor() {
-    this.modal = ensureElement<HTMLDivElement>('#modal-container')
-    this.header = ensureElement<HTMLElement>('.header__container')
-    this.gallery = ensureElement<HTMLElement>('.gallery')
-
     this.events = new EventEmitter()
     this.basket = new Basket()
     this.endUser = new EndUser()
 
-    this.headerView = new ViewHeader(this.events, this.header)
-    this.modalWindow = new ModalWindow(this.events, this.modal)
-    this.galleryView = new ViewGallery(this.events, this.gallery)
+    const header = ensureElement<HTMLElement>('.header__container')
+    this.headerView = new ViewHeader(this.events, header)
+    const modal = ensureElement<HTMLDivElement>('#modal-container')
+    this.modalWindow = new ModalWindow(this.events, modal)
+    const gallery = ensureElement<HTMLElement>('.gallery')
+    this.galleryView = new ViewGallery(this.events, gallery)
 
     this.api = new Api(API_URL)
     this.serverAPI = new ServerAPI(this.api)
