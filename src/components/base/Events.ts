@@ -11,13 +11,14 @@ export enum EventEnum {
   CatalogLoaded = 'catalog:loaded',
   BasketOpen = 'basket:open',
   ModalClose = 'modal:close',
-  CardOpen = 'card:open',
+  SaveProduct = 'product:save',
   BasketEmpty = 'basket:empty',
   OrderStart = 'order:start',
   ProductBuy = 'product:buy',
   ProductRemove = 'product:remove',
   OrderContinue = 'order:continue',
   OrderFinish = 'order:finish',
+  ShowProduct = 'product:select',
 }
 
 export interface IEvents {

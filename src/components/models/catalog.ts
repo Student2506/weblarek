@@ -9,7 +9,7 @@ export class Catalog {
 
   setSelectedItem(item: IItem) {
     this.currentItem = item
-    this.events.emit(EventEnum.CatalogLoaded)
+    this.events.emit(EventEnum.ShowProduct)
   }
   getSelectedItem(): IItem | undefined {
     if (this.currentItem) {

@@ -53,7 +53,7 @@ export class Presenter {
       this.galleryView.catalog = this.catalog.getItemList().map((item) => {
         const cardTemplate = cloneTemplate('#card-catalog')
         return new CardCatalog(cardTemplate, {
-          onClick: () => this.events.emit(EventEnum.CardOpen, item),
+          onClick: () => this.events.emit(EventEnum.SaveProduct, item),
         }).render({
           category: item.category,
           title: item.title,
@@ -62,15 +62,20 @@ export class Presenter {
         })
       })
     })
-    this.events.on(EventEnum.CardOpen, (itemData) => {
+
+    this.events.on(EventEnum.SaveProduct, (item: IItem) => {
+      this.catalog.setSelectedItem(item)
+    })
+    this.events.on(EventEnum.ShowProduct, () => {
+      const item = this.catalog.getSelectedItem()
+      if (item === undefined) return
       const itemTemplate = cloneTemplate('#card-preview')
       const cardPreview = new CardPreview(itemTemplate, this.events, {
         onClick: () => {
           this.modalWindow.content = ''
-          this.events.emit(EventEnum.ProductBuy, itemData)
+          this.events.emit(EventEnum.ProductBuy, item)
         },
       })
-      const item = itemData as IItem
       const itemForm = new FormPreview(
         cardPreview.render({
           title: item.title,
