@@ -1,6 +1,6 @@
 import { ensureElement } from '../../utils/utils'
 import { Component } from '../base/Component'
-import { IEvents } from '../base/Events'
+import { EventEnum, IEvents } from '../base/Events'
 
 interface IFormOrder {} // eslint-disable-line @typescript-eslint/no-empty-object-type
 
@@ -8,7 +8,7 @@ interface IOrderActions {
   onCash(): void
   onCard(): void
   onEdit(address: string): void
-  onSubmit(event: SubmitEvent): void
+  onSubmit(): void
 }
 
 export class FormOrder extends Component<IFormOrder> {
@@ -60,12 +60,14 @@ export class FormOrder extends Component<IFormOrder> {
     }
     if (actions?.onSubmit) {
       this.formElement.addEventListener('submit', (event) => {
-        actions.onSubmit(event)
+        event.preventDefault()
+        actions.onSubmit()
         this.onlinePayElement.classList.remove('button_alt-active')
         this.cashPayElement.classList.remove('button_alt-active')
         this.submitElement.disabled = true
         this.errorsElement.textContent = ''
         this.addressElement.value = ''
+        this.events.emit(EventEnum.OrderContinue)
       })
     }
   }

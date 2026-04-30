@@ -6,7 +6,7 @@ interface IFormContacts {} // eslint-disable-line @typescript-eslint/no-empty-ob
 
 interface IOrderActions {
   onEdit(fieldName: string, value: string): void
-  onSubmit(event: SubmitEvent): void
+  onSubmit(): void
 }
 
 export class FormContacts extends Component<IFormContacts> {
@@ -42,7 +42,8 @@ export class FormContacts extends Component<IFormContacts> {
 
     if (actions?.onSubmit) {
       this.formElement.addEventListener('submit', (event) => {
-        actions.onSubmit(event)
+        event.preventDefault()
+        actions.onSubmit()
         this.emailElement.value = ''
         this.phoneElement.value = ''
         this.submitElement.disabled = true

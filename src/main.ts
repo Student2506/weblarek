@@ -49,15 +49,13 @@ export class Presenter {
     const basket = cloneTemplate('#basket')
     this.basketForm = new FormBasket(this.events, basket, {
       onClick: () => {
-        this.events.emit(EventEnum.OrderStart, this.basket.getItemsList())
+        this.events.emit(EventEnum.OrderStart)
       },
     })
     const orderTemplate = cloneTemplate('#order')
     const actionsOrder = {
-      onSubmit: (event: SubmitEvent) => {
-        event.preventDefault()
+      onSubmit: () => {
         this.modalWindow.content = ''
-        this.events.emit(EventEnum.OrderContinue)
       },
       onCash: () => {
         this.endUser.saveUserData({ payment: 'cash' })
@@ -90,8 +88,7 @@ export class Presenter {
 
     const contactsTemplate = cloneTemplate('#contacts')
     const actionsContacts = {
-      onSubmit: (event: SubmitEvent) => {
-        event.preventDefault()
+      onSubmit: () => {
         this.modalWindow.content = ''
         this.events.emit(EventEnum.OrderFinish)
       },
@@ -121,7 +118,10 @@ export class Presenter {
     this.serverAPI = new ServerAPI(this.api)
     this.catalog = new Catalog(this.events)
 
-    // this.modal.addEventListener('click', () => this.modalClose)
+    modal.addEventListener('click', (event: MouseEvent) => {
+      if (event.target === event.currentTarget) this.modalWindow.content = ''
+    })
+
     this.events.on(EventEnum.BasketChange, () => {
       this.basketForm.render({
         basket: this.basket.getItemsList().map((item, index) => {

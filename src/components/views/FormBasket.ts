@@ -44,6 +44,7 @@ export class FormBasket extends Component<IFormBasket> {
   set basket(items: HTMLElement[]) {
     this.basketElement.replaceChildren()
     items.forEach((item) => this.basketElement.appendChild(item))
+    this.setButtonState(items.length === 0)
   }
 
   set total(value: string) {
