@@ -163,10 +163,16 @@ export class Presenter {
       const item = this.catalog.getSelectedItem()
       if (item === undefined) return
       const itemTemplate = cloneTemplate('#card-preview')
+      const isAdded = this.basket.checkIfItemInList(item.id)
       const cardPreview = new CardPreview(itemTemplate, this.events, {
         onClick: () => {
+          
           this.modalWindow.content = ''
-          this.events.emit(EventEnum.ProductBuy, item)
+          if (isAdded) {
+            this.events.emit(EventEnum.ProductRemove, item)
+          } else {
+            this.events.emit(EventEnum.ProductBuy, item)
+          }
         },
       })
       const itemForm = new FormPreview(
@@ -176,6 +182,7 @@ export class Presenter {
           category: item.category,
           image: CDN_URL + item.image,
           description: item.description,
+          added: isAdded,
         }),
       )
       this.modalWindow.render({ content: itemForm.render() })
@@ -216,10 +223,8 @@ export class Presenter {
         })
     })
 
-    this.events.on(EventEnum.ProductRemove, (item: { index: number }) => {
-      const currentList = this.basket.getItemsList()
-      this.basket.removeItem(currentList[item.index])
-      this.modalWindow.render({ content: this.basketForm.render() })
+    this.events.on(EventEnum.ProductRemove, (itemInBasket: IItem) => {
+      this.basket.removeItem(itemInBasket)
     })
 
     this.serverAPI

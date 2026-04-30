@@ -4,7 +4,7 @@ import { Card, ICard } from './Card'
 
 export type TCardPreview = Pick<
   ICard,
-  'category' | 'title' | 'image' | 'price' | 'description'
+  'category' | 'title' | 'image' | 'price' | 'description' | 'added'
 >
 
 interface ICardActions {
@@ -54,11 +54,19 @@ export class CardPreview extends Card<TCardPreview> {
     this.setImage(this.imageElement, value, `Image for ${this.title}`)
   }
 
-  set price(value: string) {
-    if (isNaN(parseFloat(value))) {
+  set price(value: number | null) {
+    if (Number === null) {
       this.priceElement.textContent = 'Бесценно'
       this.addButtonElement.textContent = 'Недоступно'
       this.addButtonElement.disabled = true
     } else this.priceElement.textContent = `${value} синапсов`
+  }
+
+  set added(isAdded: boolean) {
+    if (isAdded) {
+      this.addButtonElement.textContent = "Удалить из корзины"
+    } else {
+      this.addButtonElement.textContent = "Купить"
+    }
   }
 }

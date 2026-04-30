@@ -8,6 +8,7 @@ export interface ICard {
   price: number | null
   index?: string
   description?: string
+  added?: boolean
 }
 
 export class Card<T> extends Component<T> {
