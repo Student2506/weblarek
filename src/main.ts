@@ -47,7 +47,6 @@ export class Presenter {
     this.serverAPI = new ServerAPI(this.api)
     this.catalog = new Catalog(this.events)
 
-    
     this.modal.addEventListener('click', () => this.modalClose)
 
     this.events.on(EventEnum.CatalogLoaded, () => {
@@ -243,14 +242,10 @@ export class Presenter {
     this.serverAPI
       .getProductList()
       .then((result) => {
-        if (result && result.items) {
-          try {
-            this.catalog.setItemsList(result.items)
-          } catch (parsingError) {
-            console.error(`Has parsing error ${parsingError}`)
-          }
-        } else {
-          console.error('No valuable data')
+        try {
+          this.catalog.setItemsList(result.items)
+        } catch (parsingError) {
+          console.error(`Has parsing error ${parsingError}`)
         }
       })
       .catch((error) => {
