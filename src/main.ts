@@ -128,7 +128,7 @@ export class Presenter {
           const cardTemplate = cloneTemplate('#card-basket')
           const cardBasket = new CardBasket(this.events, cardTemplate, {
             onClick: () =>
-              this.events.emit(EventEnum.ProductRemove, { index: index }),
+              this.events.emit(EventEnum.ProductRemove, item),
           })
           const htmlBacket = cardBasket.render({
             index: String(index + 1),
@@ -166,13 +166,7 @@ export class Presenter {
       const isAdded = this.basket.checkIfItemInList(item.id)
       const cardPreview = new CardPreview(itemTemplate, this.events, {
         onClick: () => {
-          
-          this.modalWindow.content = ''
-          if (isAdded) {
-            this.events.emit(EventEnum.ProductRemove, item)
-          } else {
-            this.events.emit(EventEnum.ProductBuy, item)
-          }
+          this.events.emit(EventEnum.ProudctAddRemove)
         },
       })
       const itemForm = new FormPreview(
@@ -225,6 +219,17 @@ export class Presenter {
 
     this.events.on(EventEnum.ProductRemove, (itemInBasket: IItem) => {
       this.basket.removeItem(itemInBasket)
+    })
+
+    this.events.on(EventEnum.ProudctAddRemove, () => {
+      this.modalWindow.content = ''
+      const item = this.catalog.getSelectedItem()!!
+      const isAdded = this.basket.checkIfItemInList(item.id)
+      if (isAdded) {
+        this.basket.removeItem(item)
+      } else {
+        this.basket.addItem(item)
+      }
     })
 
     this.serverAPI
