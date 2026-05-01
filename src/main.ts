@@ -10,7 +10,6 @@ import { CardPreview } from './components/views/CardPreview'
 import { FormBasket } from './components/views/FormBasket'
 import { FormContacts } from './components/views/FormContacts'
 import { FormOrder } from './components/views/FormOrder'
-import { FormPreview } from './components/views/FormPreview'
 import { FormSuccess } from './components/views/FormSuccses'
 import { ViewGallery } from './components/views/ViewGallery'
 import { ViewHeader } from './components/views/ViewHeader'
@@ -114,6 +113,13 @@ export class Presenter {
 
     const success = cloneTemplate('#success')
     this.successForm = new FormSuccess(this.events, success)
+    const itemTemplate = cloneTemplate('#card-preview')
+    const cardPreview = new CardPreview(itemTemplate, this.events, {
+      onClick: () => {
+        this.events.emit(EventEnum.ProudctAddRemove)
+      },
+    })
+
     this.api = new Api(API_URL)
     this.serverAPI = new ServerAPI(this.api)
     this.catalog = new Catalog(this.events)
@@ -127,8 +133,7 @@ export class Presenter {
         basket: this.basket.getItemsList().map((item, index) => {
           const cardTemplate = cloneTemplate('#card-basket')
           const cardBasket = new CardBasket(this.events, cardTemplate, {
-            onClick: () =>
-              this.events.emit(EventEnum.ProductRemove, item),
+            onClick: () => this.events.emit(EventEnum.ProductRemove, item),
           })
           const htmlBacket = cardBasket.render({
             index: String(index + 1),
@@ -162,24 +167,17 @@ export class Presenter {
     this.events.on(EventEnum.ShowProduct, () => {
       const item = this.catalog.getSelectedItem()
       if (item === undefined) return
-      const itemTemplate = cloneTemplate('#card-preview')
       const isAdded = this.basket.checkIfItemInList(item.id)
-      const cardPreview = new CardPreview(itemTemplate, this.events, {
-        onClick: () => {
-          this.events.emit(EventEnum.ProudctAddRemove)
-        },
+      const card = cardPreview.render({
+        title: item.title,
+        price: item.price,
+        category: item.category,
+        image: CDN_URL + item.image,
+        description: item.description,
+        added: isAdded,
       })
-      const itemForm = new FormPreview(
-        cardPreview.render({
-          title: item.title,
-          price: item.price,
-          category: item.category,
-          image: CDN_URL + item.image,
-          description: item.description,
-          added: isAdded,
-        }),
-      )
-      this.modalWindow.render({ content: itemForm.render() })
+      
+      this.modalWindow.render({ content: card })
     })
     this.events.on(EventEnum.ProductBuy, (itemData) => {
       this.basket.addItem(itemData as IItem)
