@@ -67,9 +67,9 @@ export class CardPreview extends Card<TCardPreview> {
 
   set added(isAdded: boolean) {
     if (isAdded) {
-      this.addButtonElement.textContent = "Удалить из корзины"
+      this.addButtonElement.textContent = 'Удалить из корзины'
     } else {
-      this.addButtonElement.textContent = "Купить"
+      this.addButtonElement.textContent = 'Купить'
     }
   }
 }

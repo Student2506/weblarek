@@ -19,7 +19,7 @@ export enum EventEnum {
   OrderContinue = 'order:continue',
   OrderFinish = 'order:finish',
   ShowProduct = 'product:select',
-  ProudctAddRemove = 'product:add-remove'
+  ProudctAddRemove = 'product:add-remove',
 }
 
 export interface IEvents {

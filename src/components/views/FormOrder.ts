@@ -1,6 +1,6 @@
 import { ensureElement } from '../../utils/utils'
-import { Component } from '../base/Component'
 import { EventEnum, IEvents } from '../base/Events'
+import { Form } from './Form'
 
 interface IFormOrder {} // eslint-disable-line @typescript-eslint/no-empty-object-type
 
@@ -11,20 +11,18 @@ interface IOrderActions {
   onSubmit(): void
 }
 
-export class FormOrder extends Component<IFormOrder> {
+export class FormOrder extends Form<IFormOrder> {
   protected onlinePayElement: HTMLButtonElement
   protected cashPayElement: HTMLButtonElement
   protected addressElement: HTMLInputElement
-  protected submitElement: HTMLButtonElement
-  protected formElement: HTMLFormElement
-  protected errorsElement: HTMLSpanElement
 
   constructor(
     protected events: IEvents,
     protected container: HTMLElement,
-    actions?: IOrderActions,
+    protected actions?: IOrderActions,
   ) {
-    super(container)
+    super(events, container, actions)
+
     this.onlinePayElement = ensureElement<HTMLButtonElement>(
       "button[name='card']",
       this.container,
@@ -37,15 +35,6 @@ export class FormOrder extends Component<IFormOrder> {
       'input[name="address"]',
       this.container,
     )
-    this.submitElement = ensureElement<HTMLButtonElement>(
-      '.order__button',
-      this.container,
-    )
-    this.errorsElement = ensureElement<HTMLSpanElement>(
-      '.form__errors',
-      this.container,
-    )
-    this.formElement = this.container as HTMLFormElement
 
     if (actions?.onCard) {
       this.onlinePayElement.addEventListener('click', actions.onCard)
@@ -60,12 +49,9 @@ export class FormOrder extends Component<IFormOrder> {
     }
     if (actions?.onSubmit) {
       this.formElement.addEventListener('submit', (event) => {
-        event.preventDefault()
-        actions.onSubmit()
+        super.onsubmit(event)
         this.onlinePayElement.classList.remove('button_alt-active')
         this.cashPayElement.classList.remove('button_alt-active')
-        this.submitElement.disabled = true
-        this.errorsElement.textContent = ''
         this.addressElement.value = ''
         this.events.emit(EventEnum.OrderContinue)
       })
@@ -80,15 +66,5 @@ export class FormOrder extends Component<IFormOrder> {
   chooseCard() {
     this.cashPayElement.classList.remove('button_alt-active')
     this.onlinePayElement.classList.add('button_alt-active')
-  }
-
-  enableSubmit() {
-    this.submitElement.disabled = false
-  }
-
-  setError(errors: string[]) {
-    this.errorsElement.textContent = errors
-      .map((error) => error.toString())
-      .join('; ')
   }
 }

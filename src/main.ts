@@ -176,7 +176,7 @@ export class Presenter {
         description: item.description,
         added: isAdded,
       })
-      
+
       this.modalWindow.render({ content: card })
     })
     this.events.on(EventEnum.ProductBuy, (itemData) => {
@@ -221,7 +221,7 @@ export class Presenter {
 
     this.events.on(EventEnum.ProudctAddRemove, () => {
       this.modalWindow.content = ''
-      const item = this.catalog.getSelectedItem()!!
+      const item = this.catalog.getSelectedItem()!
       const isAdded = this.basket.checkIfItemInList(item.id)
       if (isAdded) {
         this.basket.removeItem(item)

@@ -1,6 +1,6 @@
 import { ensureElement } from '../../utils/utils'
-import { Component } from '../base/Component'
-import { IEvents } from '../base/Events'
+import { EventEnum, IEvents } from '../base/Events'
+import { Form } from './Form'
 
 interface IFormContacts {} // eslint-disable-line @typescript-eslint/no-empty-object-type
 
@@ -9,19 +9,16 @@ interface IOrderActions {
   onSubmit(): void
 }
 
-export class FormContacts extends Component<IFormContacts> {
+export class FormContacts extends Form<IFormContacts> {
   protected emailElement: HTMLInputElement
   protected phoneElement: HTMLInputElement
-  protected submitElement: HTMLButtonElement
-  protected formElement: HTMLFormElement
-  protected errorsElement: HTMLSpanElement
 
   constructor(
     protected events: IEvents,
     protected container: HTMLElement,
     actions?: IOrderActions,
   ) {
-    super(container)
+    super(events, container, actions)
     this.emailElement = ensureElement<HTMLInputElement>(
       "input[name='email']",
       this.container,
@@ -30,24 +27,12 @@ export class FormContacts extends Component<IFormContacts> {
       "input[name='phone']",
       this.container,
     )
-    this.submitElement = ensureElement<HTMLButtonElement>(
-      "button[type='submit']",
-      this.container,
-    )
-    this.errorsElement = ensureElement<HTMLSpanElement>(
-      '.form__errors',
-      this.container,
-    )
-    this.formElement = this.container as HTMLFormElement
-
     if (actions?.onSubmit) {
       this.formElement.addEventListener('submit', (event) => {
-        event.preventDefault()
-        actions.onSubmit()
+        super.onsubmit(event)
         this.emailElement.value = ''
         this.phoneElement.value = ''
-        this.submitElement.disabled = true
-        this.errorsElement.textContent = ''
+        this.events.emit(EventEnum.OrderFinish)
       })
     }
     if (actions?.onEdit) {
@@ -60,15 +45,5 @@ export class FormContacts extends Component<IFormContacts> {
         actions.onEdit('phone', this.phoneElement.value),
       )
     }
-  }
-
-  enableSubmit() {
-    this.submitElement.disabled = false
-  }
-
-  setError(errors: string[]) {
-    this.errorsElement.textContent = errors
-      .map((error) => error.toString())
-      .join('; ')
   }
 }
