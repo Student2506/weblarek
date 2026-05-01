@@ -20,7 +20,7 @@ export enum EventEnum {
   OrderFinish = 'order:finish',
   ShowProduct = 'product:select',
   ProudctAddRemove = 'product:add-remove',
-  UserChange = 'user:change'
+  UserChange = 'user:change',
 }
 
 export interface IEvents {
