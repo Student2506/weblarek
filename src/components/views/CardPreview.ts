@@ -55,11 +55,14 @@ export class CardPreview extends Card<TCardPreview> {
   }
 
   set price(value: number | null) {
-    if (Number === null) {
+    if (value === null) {
       this.priceElement.textContent = 'Бесценно'
       this.addButtonElement.textContent = 'Недоступно'
       this.addButtonElement.disabled = true
-    } else this.priceElement.textContent = `${value} синапсов`
+    } else {
+      this.priceElement.textContent = `${value} синапсов`
+      this.addButtonElement.disabled = false
+    }
   }
 
   set added(isAdded: boolean) {
