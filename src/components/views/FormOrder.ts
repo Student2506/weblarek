@@ -5,9 +5,7 @@ import { Form } from './Form'
 interface IFormOrder {} // eslint-disable-line @typescript-eslint/no-empty-object-type
 
 interface IOrderActions {
-  onCash(): void
-  onCard(): void
-  onEdit(address: string): void
+  onEdit(fleldName: string, value: string): void
   onSubmit(): void
 }
 
@@ -36,20 +34,22 @@ export class FormOrder extends Form<IFormOrder> {
       this.container,
     )
 
-    if (actions?.onCard) {
-      this.onlinePayElement.addEventListener('click', actions.onCard)
-    }
-    if (actions?.onCash) {
-      this.cashPayElement.addEventListener('click', actions.onCash)
-    }
     if (actions?.onEdit) {
       this.addressElement.addEventListener('input', () => {
-        actions.onEdit(this.addressElement.value)
+        actions.onEdit('address', this.addressElement.value)
+      })
+      this.cashPayElement.addEventListener('click', () => {
+        actions.onEdit('payment', 'cash')
+        this.chooseCash()
+      })
+      this.onlinePayElement.addEventListener('click', () => {
+        actions.onEdit('payment', 'card')
+        this.chooseCard()
       })
     }
     if (actions?.onSubmit) {
       this.formElement.addEventListener('submit', (event) => {
-        super.onsubmit(event)
+        super.onSubmit(event)
         this.onlinePayElement.classList.remove('button_alt-active')
         this.cashPayElement.classList.remove('button_alt-active')
         this.addressElement.value = ''

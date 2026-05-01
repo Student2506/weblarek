@@ -29,15 +29,15 @@ export abstract class Form<T> extends Component<T> {
     this.formElement = this.container as HTMLFormElement
   }
 
-  onsubmit(event: SubmitEvent) {
+  onSubmit(event: SubmitEvent) {
     event.preventDefault()
     this.actions?.onSubmit()
-    this.submitElement.disabled = true
     this.errorsElement.textContent = ''
+    this.setSubmitState(true)
   }
 
-  enableSubmit() {
-    this.submitElement.disabled = false
+  setSubmitState(isDisabled: boolean) {
+    this.submitElement.disabled = isDisabled
   }
 
   setError(errors: string[]) {

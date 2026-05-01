@@ -52,63 +52,21 @@ export class Presenter {
       },
     })
     const orderTemplate = cloneTemplate('#order')
-    const actionsOrder = {
+    const actionsForm = {
       onSubmit: () => {
-        this.modalWindow.content = ''
-      },
-      onCash: () => {
-        this.endUser.saveUserData({ payment: 'cash' })
-        this.orderForm.chooseCash()
-        const errors = this.validateInput(['payment', 'address'])
-        if (!errors.length) {
-          this.orderForm.setError([])
-          this.orderForm.enableSubmit()
-        } else this.orderForm.setError(errors)
-      },
-      onCard: () => {
-        this.endUser.saveUserData({ payment: 'card' })
-        this.orderForm.chooseCard()
-        const errors = this.validateInput(['payment', 'address'])
-        if (!errors.length) {
-          this.orderForm.setError([])
-          this.orderForm.enableSubmit()
-        } else this.orderForm.setError(errors)
-      },
-      onEdit: (address: string) => {
-        this.endUser.saveUserData({ address: address })
-        const errors = this.validateInput(['payment', 'address'])
-        if (!errors.length) {
-          this.orderForm.setError([])
-          this.orderForm.enableSubmit()
-        } else this.orderForm.setError(errors)
-      },
-    }
-    this.orderForm = new FormOrder(this.events, orderTemplate, actionsOrder)
-
-    const contactsTemplate = cloneTemplate('#contacts')
-    const actionsContacts = {
-      onSubmit: () => {
-        this.modalWindow.content = ''
-        this.events.emit(EventEnum.OrderFinish)
+        this.events.emit(EventEnum.ModalClose)
       },
       onEdit: (fieldName: string, value: string) => {
-        if (fieldName === 'email') {
-          this.endUser.saveUserData({ email: value })
-        }
-        if (fieldName === 'phone') {
-          this.endUser.saveUserData({ phone: value })
-        }
-        const errors = this.validateInput(['phone', 'email'])
-        if (!errors.length) {
-          this.orderContacts.setError([])
-          this.orderContacts.enableSubmit()
-        } else this.orderContacts.setError(errors)
+        this.events.emit(EventEnum.UserChange, { [fieldName]: value })
       },
     }
+    this.orderForm = new FormOrder(this.events, orderTemplate, actionsForm)
+
+    const contactsTemplate = cloneTemplate('#contacts')
     this.orderContacts = new FormContacts(
       this.events,
       contactsTemplate,
-      actionsContacts,
+      actionsForm,
     )
 
     const success = cloneTemplate('#success')
@@ -125,7 +83,8 @@ export class Presenter {
     this.catalog = new Catalog(this.events)
 
     modal.addEventListener('click', (event: MouseEvent) => {
-      if (event.target === event.currentTarget) this.modalWindow.content = ''
+      if (event.target === event.currentTarget)
+        this.events.emit(EventEnum.ModalClose)
     })
 
     this.events.on(EventEnum.BasketChange, () => {
@@ -181,16 +140,18 @@ export class Presenter {
     })
     this.events.on(EventEnum.ProductBuy, (itemData) => {
       this.basket.addItem(itemData as IItem)
-      this.modalWindow.content = ''
+      this.events.emit(EventEnum.ModalClose)
     })
     this.events.on(EventEnum.BasketOpen, () => {
       this.modalWindow.render({ content: this.basketForm.render() })
     })
 
     this.events.on(EventEnum.OrderStart, () => {
+      this.orderForm.setSubmitState(true)
       this.modalWindow.render({ content: this.orderForm.render() })
     })
     this.events.on(EventEnum.OrderContinue, () => {
+      this.orderContacts.setSubmitState(true)
       this.modalWindow.render({ content: this.orderContacts.render() })
     })
 
@@ -209,6 +170,7 @@ export class Presenter {
             }),
           })
           this.basket.clearBasket()
+          this.endUser.clearUserData()
         })
         .catch((error) => {
           console.error(`Post Order error ${error}`)
@@ -220,7 +182,7 @@ export class Presenter {
     })
 
     this.events.on(EventEnum.ProudctAddRemove, () => {
-      this.modalWindow.content = ''
+      this.events.emit(EventEnum.ModalClose)
       const item = this.catalog.getSelectedItem()!
       const isAdded = this.basket.checkIfItemInList(item.id)
       if (isAdded) {
@@ -243,19 +205,39 @@ export class Presenter {
         console.error(`Server failed ${error}`)
       })
     this.events.on(EventEnum.ModalClose, () => (this.modalWindow.content = ''))
+
+    this.events.on(EventEnum.UserChange, (event) => {
+      console.log('User Change event', event)
+      this.endUser.saveUserData(event)
+      const errors: ValidationErrors = this.endUser.checkUserData()
+      const contactKeys: Array<keyof IBuyer> = ['phone', 'email']
+      const contactErrors = contactKeys
+        .map((field) => errors[field])
+        .filter((value): value is string => typeof value === 'string')
+      if (!contactErrors.length) {
+        this.orderContacts.setError([])
+        this.orderContacts.setSubmitState(false)
+      } else {
+        this.orderContacts.setError(contactErrors)
+        this.orderContacts.setSubmitState(true)
+      }
+      const orderKeys: Array<keyof IBuyer> = ['payment', 'address']
+      const orderErrors = orderKeys
+        .map((field) => errors[field])
+        .filter((value): value is string => typeof value === 'string')
+      if (!orderErrors.length) {
+        this.orderForm.setError([])
+        this.orderForm.setSubmitState(false)
+      } else {
+        this.orderForm.setError(orderErrors)
+        this.orderForm.setSubmitState(true)
+      }
+    })
   }
 
   init(): void {
     this.headerView.render()
     this.galleryView.render()
-  }
-
-  private validateInput(fields: Array<keyof IBuyer>) {
-    const errors: ValidationErrors = this.endUser.checkUserData()
-    const targetErrors: Array<keyof IBuyer> = fields
-    return targetErrors
-      .map((field) => errors[field])
-      .filter((value): value is string => typeof value === 'string')
   }
 }
 

@@ -29,7 +29,7 @@ export class FormContacts extends Form<IFormContacts> {
     )
     if (actions?.onSubmit) {
       this.formElement.addEventListener('submit', (event) => {
-        super.onsubmit(event)
+        super.onSubmit(event)
         this.emailElement.value = ''
         this.phoneElement.value = ''
         this.events.emit(EventEnum.OrderFinish)
