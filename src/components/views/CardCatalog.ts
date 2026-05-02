@@ -14,7 +14,7 @@ export class CardCatalog extends Card<TCardCatalog> {
 
   constructor(
     protected conatiner: HTMLElement,
-    actions?: ICardActions,
+    protected actions?: ICardActions,
   ) {
     super(conatiner)
 

@@ -15,7 +15,7 @@ export class CardBasket extends Card<TCardBasket> {
   constructor(
     protected events: IEvents,
     protected container: HTMLElement,
-    actions?: ICardActions,
+    protected actions?: ICardActions,
   ) {
     super(container)
 

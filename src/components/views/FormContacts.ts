@@ -16,7 +16,7 @@ export class FormContacts extends Form<IFormContacts> {
   constructor(
     protected events: IEvents,
     protected container: HTMLElement,
-    actions?: IOrderActions,
+    protected actions?: IOrderActions,
   ) {
     super(events, container, actions)
     this.emailElement = ensureElement<HTMLInputElement>(
