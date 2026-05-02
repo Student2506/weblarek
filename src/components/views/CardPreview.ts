@@ -1,3 +1,4 @@
+import { categoryMap } from '../../utils/constants'
 import { ensureElement } from '../../utils/utils'
 import { IEvents } from '../base/Events'
 import { Card, ICard } from './Card'
@@ -48,6 +49,9 @@ export class CardPreview extends Card<TCardPreview> {
 
   set category(value: string) {
     this.categoryElement.textContent = value
+    const currentClassList = ['card__category']
+        const className = categoryMap[value as keyof typeof categoryMap]
+        this.categoryElement.classList = [...currentClassList, className].join(' ')
   }
 
   set image(value: string) {
