@@ -50,8 +50,8 @@ export class CardPreview extends Card<TCardPreview> {
   set category(value: string) {
     this.categoryElement.textContent = value
     const currentClassList = ['card__category']
-        const className = categoryMap[value as keyof typeof categoryMap]
-        this.categoryElement.classList = [...currentClassList, className].join(' ')
+    const className = categoryMap[value as keyof typeof categoryMap]
+    this.categoryElement.classList = [...currentClassList, className].join(' ')
   }
 
   set image(value: string) {
