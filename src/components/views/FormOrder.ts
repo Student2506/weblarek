@@ -40,11 +40,9 @@ export class FormOrder extends Form<IFormOrder> {
       })
       this.cashPayElement.addEventListener('click', () => {
         actions.onEdit('payment', 'cash')
-        this.chooseCash()
       })
       this.onlinePayElement.addEventListener('click', () => {
         actions.onEdit('payment', 'card')
-        this.chooseCard()
       })
     }
     if (actions?.onSubmit) {

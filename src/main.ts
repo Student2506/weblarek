@@ -206,9 +206,15 @@ export class Presenter {
       })
     this.events.on(EventEnum.ModalClose, () => (this.modalWindow.content = ''))
 
-    this.events.on(EventEnum.UserChange, (event) => {
+    this.events.on(EventEnum.UserChange, (event: Partial<IBuyer>) => {
       console.log('User Change event', event)
       this.endUser.saveUserData(event)
+      if (event.payment === 'card') {
+        this.orderForm.chooseCard()
+      }
+      if (event.payment === 'cash') {
+        this.orderForm.chooseCash()
+      } 
       const errors: ValidationErrors = this.endUser.checkUserData()
       const contactKeys: Array<keyof IBuyer> = ['phone', 'email']
       const contactErrors = contactKeys
