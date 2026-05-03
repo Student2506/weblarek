@@ -207,37 +207,28 @@ export class Presenter {
     this.events.on(EventEnum.ModalClose, () => (this.modalWindow.content = ''))
 
     this.events.on(EventEnum.UserChange, (event: Partial<IBuyer>) => {
-      console.log('User Change event', event)
       this.endUser.saveUserData(event)
       if (event.payment === 'card') {
         this.orderForm.chooseCard()
       }
       if (event.payment === 'cash') {
         this.orderForm.chooseCash()
-      } 
+      }
       const errors: ValidationErrors = this.endUser.checkUserData()
+
       const contactKeys: Array<keyof IBuyer> = ['phone', 'email']
       const contactErrors = contactKeys
         .map((field) => errors[field])
         .filter((value): value is string => typeof value === 'string')
-      if (!contactErrors.length) {
-        this.orderContacts.setError([])
-        this.orderContacts.setSubmitState(false)
-      } else {
-        this.orderContacts.setError(contactErrors)
-        this.orderContacts.setSubmitState(true)
-      }
+      this.orderContacts.setError(contactErrors)
+      this.orderContacts.setSubmitState(contactErrors.length > 0)
+
       const orderKeys: Array<keyof IBuyer> = ['payment', 'address']
       const orderErrors = orderKeys
         .map((field) => errors[field])
         .filter((value): value is string => typeof value === 'string')
-      if (!orderErrors.length) {
-        this.orderForm.setError([])
-        this.orderForm.setSubmitState(false)
-      } else {
-        this.orderForm.setError(orderErrors)
-        this.orderForm.setSubmitState(true)
-      }
+      this.orderForm.setError(orderErrors)
+      this.orderForm.setSubmitState(orderErrors.length > 0)
     })
   }
 
