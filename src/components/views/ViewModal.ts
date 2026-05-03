@@ -17,7 +17,7 @@ export class ModalWindow extends Component<IModalWindow> {
   constructor(
     protected events: IEvents,
     protected container: HTMLElement,
-    protected actions?: IModalActions
+    protected actions?: IModalActions,
   ) {
     super(container)
 

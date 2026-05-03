@@ -199,7 +199,7 @@ export class Presenter {
       .catch((error) => {
         console.error(`Server failed ${error}`)
       })
-    this.events.on(EventEnum.ModalClose, () => (this.modalWindow.close()))
+    this.events.on(EventEnum.ModalClose, () => this.modalWindow.close())
 
     this.events.on(EventEnum.UserChange, (event: Partial<IBuyer>) => {
       this.endUser.saveUserData(event)
