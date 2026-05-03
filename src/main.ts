@@ -82,11 +82,6 @@ export class Presenter {
     this.serverAPI = new ServerAPI(this.api)
     this.catalog = new Catalog(this.events)
 
-    modal.addEventListener('click', (event: MouseEvent) => {
-      if (event.target === event.currentTarget)
-        this.events.emit(EventEnum.ModalClose)
-    })
-
     this.events.on(EventEnum.BasketChange, () => {
       this.basketForm.render({
         basket: this.basket.getItemsList().map((item, index) => {
@@ -204,7 +199,7 @@ export class Presenter {
       .catch((error) => {
         console.error(`Server failed ${error}`)
       })
-    this.events.on(EventEnum.ModalClose, () => (this.modalWindow.content = ''))
+    this.events.on(EventEnum.ModalClose, () => (this.modalWindow.close()))
 
     this.events.on(EventEnum.UserChange, (event: Partial<IBuyer>) => {
       this.endUser.saveUserData(event)

@@ -6,6 +6,10 @@ interface IModalWindow {
   content: HTMLElement
 }
 
+interface IModalActions {
+  onClose(event: MouseEvent): void
+}
+
 export class ModalWindow extends Component<IModalWindow> {
   protected contentElement: HTMLDivElement
   protected closeButton: HTMLButtonElement
@@ -13,6 +17,7 @@ export class ModalWindow extends Component<IModalWindow> {
   constructor(
     protected events: IEvents,
     protected container: HTMLElement,
+    protected actions?: IModalActions
   ) {
     super(container)
 
@@ -25,8 +30,9 @@ export class ModalWindow extends Component<IModalWindow> {
       this.container,
     )
 
-    this.closeButton.addEventListener('click', () => {
-      this.events.emit(EventEnum.ModalClose)
+    this.closeButton.addEventListener('click', (event) => {
+      if (event.target === event.currentTarget)
+        this.events.emit(EventEnum.ModalClose)
     })
   }
 
@@ -38,5 +44,9 @@ export class ModalWindow extends Component<IModalWindow> {
       this.contentElement.innerHTML = ''
       this.container.classList.remove('modal_active')
     }
+  }
+
+  close() {
+    this.content = ''
   }
 }
