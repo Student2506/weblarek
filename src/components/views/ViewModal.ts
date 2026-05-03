@@ -34,6 +34,10 @@ export class ModalWindow extends Component<IModalWindow> {
       if (event.target === event.currentTarget)
         this.events.emit(EventEnum.ModalClose)
     })
+
+    this.closeButton.addEventListener('click', () => {
+        this.events.emit(EventEnum.ModalClose)
+    })
   }
 
   set content(item: HTMLElement | '') {
