@@ -2,7 +2,10 @@ import { ensureElement } from '../../utils/utils'
 import { EventEnum, IEvents } from '../base/Events'
 import { Form } from './Form'
 
-interface IFormContacts {} // eslint-disable-line @typescript-eslint/no-empty-object-type
+interface IFormContacts {
+  phone: string
+  email: string
+}
 
 interface IOrderActions {
   onEdit(fieldName: string, value: string): void
@@ -45,5 +48,13 @@ export class FormContacts extends Form<IFormContacts> {
         actions.onEdit('phone', this.phoneElement.value),
       )
     }
+  }
+
+  set email(value: string) {
+    this.emailElement.value = value
+  }
+
+  set phone(value: string) {
+    this.phoneElement.value = value
   }
 }

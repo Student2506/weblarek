@@ -203,11 +203,12 @@ export class Presenter {
 
     this.events.on(EventEnum.UserChange, (event: Partial<IBuyer>) => {
       this.endUser.saveUserData(event)
-      if (event.payment === 'card') {
-        this.orderForm.chooseCard()
-      }
-      if (event.payment === 'cash') {
-        this.orderForm.chooseCash()
+      const userData = this.endUser.getUserData()
+      this.orderForm.render(userData)
+      this.orderContacts.render(userData)
+      if (userData.payment) {
+        if (userData.payment === 'cash') this.orderForm.chooseCash()
+        else this.orderForm.chooseCard()
       }
       const errors: ValidationErrors = this.endUser.checkUserData()
 

@@ -2,7 +2,9 @@ import { ensureElement } from '../../utils/utils'
 import { EventEnum, IEvents } from '../base/Events'
 import { Form } from './Form'
 
-interface IFormOrder {} // eslint-disable-line @typescript-eslint/no-empty-object-type
+interface IFormOrder {
+  address: string
+}
 
 interface IOrderActions {
   onEdit(fleldName: string, value: string): void
@@ -64,5 +66,9 @@ export class FormOrder extends Form<IFormOrder> {
   chooseCard() {
     this.cashPayElement.classList.remove('button_alt-active')
     this.onlinePayElement.classList.add('button_alt-active')
+  }
+
+  set address(value: string) {
+    this.addressElement.value = value
   }
 }
