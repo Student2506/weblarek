@@ -34,9 +34,8 @@ export class CardCatalog extends Card<TCardCatalog> {
 
   set category(value: string) {
     this.categoryElement.textContent = value
-    const currentClassList = ['card__category']
     const className = categoryMap[value as keyof typeof categoryMap]
-    this.categoryElement.classList = [...currentClassList, className].join(' ')
+    this.categoryElement.classList = `card__category ${className}`
   }
 
   set image(value: string) {
